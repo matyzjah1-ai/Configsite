@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GitHub VM Script Generator</title>
 <style>
-/*! 7.css v0.21.1 - https://khang-nd.github.io/7.css */
 :root{--w7-font:9pt "Segoe UI","SegoeUI","Noto Sans",sans-serif;--w7-surface:#f0f0f0;--w7-el-bg:#f2f2f2;--w7-el-bg-d:#f4f4f4;--w7-el-bg-s-1:#ebebeb;--w7-el-bg-s-2:#cfcfcf;--w7-el-sd:inset 0 0 0 1px #fffc;--w7-el-sd-a:inset 1px 1px 0 #0003,inset -1px 1px 0 #0001;--w7-el-bd:#8e8f8f;--w7-el-bd-h:#3c7fb1;--w7-el-bd-a:#6d91ab;--w7-el-bd-d:#adb2b5;--w7-el-bdr:3px;--w7-el-c:#000;--w7-el-c-d:#838383;--w7-el-grad:linear-gradient(var(--w7-el-bg) 45%,var(--w7-el-bg-s-1) 45%,var(--w7-el-bg-s-2));--w7-el-grad-h:linear-gradient(#eaf6fd 45%,#bee6fd 0,#a7d9f5);--w7-el-grad-a:linear-gradient(#e5f4fc,#c4e5f6 30% 50%,#98d1ef 50%,#68b3db)}
 body{color:#222;font-family:"Segoe UI","SegoeUI","Noto Sans",sans-serif;font-size:9pt}
 [role=button],button,input[type=file]::file-selector-button{background:var(--w7-el-grad);border:1px solid var(--w7-el-bd);border-radius:var(--w7-el-bdr);box-shadow:var(--w7-el-sd);box-sizing:border-box;color:#222;font:var(--w7-font);min-height:23px;min-width:75px;padding:0 12px;position:relative;text-align:center;z-index:0}
@@ -15,100 +14,57 @@ body{color:#222;font-family:"Segoe UI","SegoeUI","Noto Sans",sans-serif;font-siz
 [role=button]:disabled,button:disabled{background:var(--w7-el-bg-d);border-color:var(--w7-el-bd-d);color:var(--w7-el-c-d)}
 [role=button]:not(:disabled):hover,button:not(:disabled):hover{border-color:var(--w7-el-bd-h);transition:border-color .3s}
 [role=button]:not(:disabled):hover:before,button:not(:disabled):hover:before{opacity:1;transition:opacity .3s}
-[role=button]:not(:disabled):not(:hover),button:not(:disabled):not(:hover){border-color:var(--w7-el-bd);transition:border-color 1s linear}
-[role=button]:not(:disabled):not(:hover):before,button:not(:disabled):not(:hover):before{opacity:0;transition:opacity 1s linear}
 [role=button]:not(:disabled).active,[role=button]:not(:disabled):active,button:not(:disabled).active,button:not(:disabled):active{border-color:var(--w7-el-bd-a);transition:border-color .3s}
 [role=button]:not(:disabled).active:after,[role=button]:not(:disabled):active:after,button:not(:disabled).active:after,button:not(:disabled):active:after{opacity:1;transition:opacity .3s}
 [role=button].focused,[role=button]:focus-visible,button.focused,button:focus-visible{box-shadow:inset 0 0 0 2px #98d1ef;outline:1px dotted #000;outline-offset:-4px}
 [role=button].default,[role=button].focused,[role=button]:focus,button.default,button.focused,button:focus{background-image:var(--w7-el-grad-h);border-color:#5586a3}
 :root{--w7-cb-size:14px}
 input[type=checkbox]{appearance:none;-webkit-appearance:none;-moz-appearance:none;background:none;border:none;font:var(--w7-font);margin:0;opacity:0}
-input[type=checkbox]+label{align-items:center;display:inline-flex;font:var(--w7-font);position:relative}
+input[type=checkbox]+label{align-items:center;display:inline-flex;font:var(--w7-font);position:relative;cursor:pointer}
 input[type=checkbox]+label:before{background:#f6f6f6;border:1px solid var(--w7-el-bd);box-shadow:inset 0 0 0 1px var(--w7-el-bg-d),inset 1px 1px 0 1px #aeaeae,inset -1px -1px 0 1px #ddd,inset 3px 3px 6px #ccc;box-sizing:border-box;content:"";display:inline-block;height:var(--w7-cb-size);margin-right:6px;transition:.4s;width:var(--w7-cb-size)}
-input[type=checkbox]+label:hover:before{background:#e9f7fe;border-color:var(--w7-el-bd-h);box-shadow:inset 0 0 0 1px #def9fa,inset 1px 1px 0 1px #79c6f9,inset -1px -1px 0 1px #c6e9fc,inset 3px 3px 6px #b1dffd}
-input[type=checkbox]:focus-visible+label{outline:1px dotted #000}
 input[type=checkbox]:checked+label:after{color:#4a5f97;content:"\2714";display:block;font-weight:700;left:2px;position:absolute;top:0}
-input[type=checkbox]:disabled+label{color:#6d6d6d}
+input[type=checkbox]:disabled+label{color:#6d6d6d;cursor:not-allowed}
 input[type=checkbox]:disabled+label:before{background:linear-gradient(to bottom right,#f0f0f0,#fbfbfb);border:1px solid #b1b1b1;box-shadow:none}
-select:not([multiple]){-webkit-appearance:none;-moz-appearance:none;appearance:none;background:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTExIDZINHYxaDF2MWgxdjFoHXYxaDFWOWgxVjhoMVY3aDFWNloiIGZpbGw9IiMwMDAiLz48L3N2Zz4="),var(--w7-el-grad);background-position:100%;background-repeat:no-repeat;border:1px solid var(--w7-el-bd);border-radius:var(--w7-el-bdr);box-shadow:var(--w7-el-sd);box-sizing:border-box;color:#222;font:var(--w7-font);padding:2px 30px 2px 3px;position:relative}
-select:not([multiple]):not(:disabled):hover{border-color:var(--w7-el-bd-h)}
-select:not([multiple]):not(:disabled):active{border-color:var(--w7-el-bd-a);box-shadow:var(--w7-el-sd-a);outline:none}
-select:not([multiple]):not(:disabled):focus{box-shadow:inset 0 0 0 2px #98d1ef;outline:1px dotted #000;outline-offset:-4px}
-select:not([multiple]):disabled{background:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTExIDZINHYxaDF2MWgxdjFoHXYxaDFWOWgxVjhoMVY3aDFWNloiIGZpbGw9IiNhZmFmYWYiLz48L3N2Zz4="),var(--w7-el-bg-d);background-position:100%;background-repeat:no-repeat;border-color:var(--w7-el-bd-d);color:var(--w7-el-c-d);opacity:1}
+
+select:not([multiple]){-webkit-appearance:none;-moz-appearance:none;appearance:none;background:var(--w7-el-grad);background-position:100%;background-repeat:no-repeat;border:1px solid var(--w7-el-bd);border-radius:var(--w7-el-bdr);box-shadow:var(--w7-el-sd);box-sizing:border-box;color:#222;font:var(--w7-font);padding:4px 30px 4px 6px;position:relative}
 fieldset{border:1px solid #cdd7db;border-radius:var(--w7-el-bdr);box-shadow:inset 0 0 0 1px #fff;margin:0;padding:8px 10px 10px}
 fieldset legend{font:var(--w7-font)}
 .group,fieldset{display:flex;flex-direction:column;gap:6px}
 .group+.group{margin-top:6px}
-input[type=radio]{appearance:none;-webkit-appearance:none;-moz-appearance:none;background:0;border:none;margin:0;opacity:0;position:fixed}
-input[type=radio]+label{align-items:center;display:inline-flex;font:var(--w7-font);margin-left:20px;position:relative}
-input[type=radio]+label:before{background:#f6f6f6;border:1px solid;border-color:var(--w7-el-bd);border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--w7-el-bg-d),inset 1px 1px 0 1.5px #aeaeae,inset -1px 0 0 1.5px #ddd,inset 3px 3px 6px #ccc;box-sizing:border-box;content:"";display:inline-block;height:14px;left:-20px;margin-right:6px;position:absolute;top:0;transition:.4s;width:14px}
-input[type=radio]+label:hover:before{border-color:var(--w7-el-bd-h);box-shadow:inset 0 0 0 1.5px #def9fa,inset 1px 1px 0 1.5px #79c6f9,inset -1px -1px 0 1.5px #c6e9fc,inset 3px 3px 6px #b1dffd}
-input[type=radio]:checked+label:after{background:#7cd3eb;border:1.5px solid #27506d;border-radius:50%;box-shadow:inset -1px -1px 0 .5px #16638f,inset -1px -1px 0 1px #1985c0;box-sizing:border-box;content:"";display:block;height:8px;left:-17px;position:absolute;top:3px;width:8px}
-input[type=radio]:focus-visible+label{outline:1px dotted #000}
-input[type=radio]:disabled+label{filter:grayscale(1);opacity:.6}
-/* window.css */
+
 .window{border:1px solid #000000b3;border-radius:6px;box-shadow:2px 2px 10px 1px #000000b3,inset 0 0 0 1px #fffa;font:9pt "Segoe UI","SegoeUI","Noto Sans",sans-serif;position:relative;z-index:0}
 .window:before{background:linear-gradient(transparent 20%,#ffffffb3 40%,transparent 41%),linear-gradient(90deg,#ffffff66,#0000001a,#ffffff33),#4580c4;background-color:#4580c4;border-radius:6px;box-shadow:inset 0 0 0 1px #fffd;content:"";height:100%;left:0;position:absolute;top:0;width:100%;z-index:-1}
 .window-body{background:#f0f0f0;border:1px solid #000000b3;box-shadow:0 0 0 1px #fff9;margin:0 6px 6px}
 .window-body.has-space{padding:6px}
-.window-body pre{margin:-6px}
 .window footer,.window-footer{background:#f0f0f0;border:1px solid #000000b3;border-top:0;box-shadow:0 .5px 1px .5px #fff;margin:-7px 6px 6px;padding:10px;position:relative}
-.window fieldset{margin-bottom:9px}
-.window>.title-bar{border:0;box-shadow:inset 0 1px 0 #fffd,inset 1px 0 0 #fffd,inset -1px 0 0 #fffd}
 .title-bar{align-items:center;background:linear-gradient(90deg,#ffffff66,#0000001a,#ffffff33),#4580c4;background-color:#4580c4;border:1px solid #000000b3;border-radius:6px 6px 0 0;box-shadow:inset 0 0 0 1px #fff9;display:flex;font:9pt "Segoe UI","SegoeUI","Noto Sans",sans-serif;justify-content:space-between;padding:0 6px 6px}
 .title-bar-text{color:#000;letter-spacing:0;line-height:15px;padding-top:6px;text-shadow:0 0 10px #fff,0 0 10px #fff,0 0 10px #fff,0 0 10px #fff}
 .title-bar-controls{background:#fff3;border:1px solid #0000004d;border-radius:0 0 5px 5px;border-top:0;box-shadow:0 1px 0 #fffa,1px 0 0 #fffa,-1px 0 0 #fffa;display:flex}
 .title-bar-controls button{background:none;border:0;border-radius:0;border-right:1px solid #0000004d;box-shadow:none;box-sizing:border-box;min-height:19px;min-width:29px;padding:0;position:relative}
 .title-bar-controls button:after{content:none}
-.title-bar-controls button:active,.title-bar-controls button:hover{background:none}
-.title-bar-controls button:disabled:before{opacity:.4}
 .title-bar-controls button:before{border-radius:0;bottom:0;box-shadow:inset 0 0 0 1px #fff5;content:"";left:0;opacity:1;position:absolute;right:0;top:0}
-.title-bar-controls button.is-minimize:before,.title-bar-controls button[aria-label=Minimize]:before{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAFCAYAAABxeg0vAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAA7SURBVHgBlY+xDQAgDMNaiQ9B8AHcxAlI/NYtKwj6QOohUzxYc+1HAqQ3e03qXNpwwcyE5QsAaEGjDRf8ZAza6Bz6VQAAAABJRU5ErkJggg==") no-repeat center 10px}
-.title-bar-controls button.is-maximize:before,.title-bar-controls button[aria-label=Maximize]:before{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAYAAACALL/6AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABsSURBVHgBlZHBCYAwDEVT6YaKbqArOILgBLqBosP1VkhAaQ6S1lKad+ihPy8kxLT9+IACG57r2KqKu2GCBpTYtEMOOQELzrnv4z53I4vDjjJnwXsPJWTOAiJGHVNB5pGwLjPk+AlEBLUY7eFebCosBHOR7vYAAAAASUVORK5CYII=") no-repeat 50%}
-.title-bar-controls button.is-close,.title-bar-controls button[aria-label=Close]{min-width:48px}
-.title-bar-controls button.is-close:before,.title-bar-controls button[aria-label=Close]:before{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAKCAYAAABi8KSDAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACUSURBVHgBlZFNCoQwDIVbmRvOMHOAAd0K/uDGlYKiCG4VPICi9yu0oCSQoFUXFtKEl6+voZXvr7sKay1TL690FOexY+Hz87i2decOuDKQsNGVe8AGYTRJIh0Y+orBvxszCPllOymlxN06jNE26Qnwg4zdHQLrMhFaawwAqAadDPE1ijwUxhiMKCmxCZk06OMYTz5lAx3xWDeXkLNAAAAAAElFTkSuQmCC") no-repeat 50%}
-.title-bar-controls button:first-child,.title-bar-controls button:first-child:before{border-bottom-left-radius:5px}
-.title-bar-controls button:last-child,.title-bar-controls button:last-child:before{border:0;border-bottom-right-radius:5px}
-.title-bar-controls button:focus{outline:none}
-.title-bar.active .title-bar-controls,.window.active .title-bar .title-bar-controls{border-color:#000000b3}
-.title-bar.active .title-bar-controls button,.window.active .title-bar .title-bar-controls button{border-color:#000000b3;box-shadow:inset 0 0 0 1px #fffa}
-.title-bar.active .title-bar-controls button:after,.window.active .title-bar .title-bar-controls button:after{content:none}
+.title-bar-controls button.is-minimize:before{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAFCAYAAABxeg0vAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAA7SURBVHgBlY+xDQAgDMNaiQ9B8AHcxAlI/NYtKwj6QOohUzxYc+1HAqQ3e03qXNpwwcyE5QsAaEGjDRf8ZAza6Bz6VQAAAABJRU5ErkJggg==") no-repeat center 10px}
+.title-bar-controls button.is-maximize:before{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAYAAACALL/6AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABsSURBVHgBlZHBCYAwDEVT6YaKbqArOILgBLqBosP1VkhAaQ6S1lKad+ihPy8kxLT9+IACG57r2KqKu2GCBpTYtEMOOQELzrnv4z53I4vDjjJnwXsPJWTOAiJGHVNB5pGwLjPk+AlEBLUY7eFebCosBHOR7vYAAAAASUVORK5CYII=") no-repeat 50%}
+.title-bar-controls button.is-close:before{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAKCAYAAABi8KSDAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACUSURBVHgBlZFNCoQwDIVbmRvOMHOAAd0K/uDGlYKiCG4VPICi9yu0oCSQoFUXFtKEl6+voZXvr7sKay1TL690FOexY+Hz87i2decOuDKQsNGVe8AGYTRJIh0Y+orBvxszCPllOymlxN06jNE26Qnwg4zdHQLrMhFaawwAqAadDPE1ijwUxhiMKCmxCZk06OMYTz5lAx3xWDeXkLNAAAAAAElFTkSuQmCC") no-repeat 50%}
 .status-bar{background:#f0f0f0;border:1px solid #000000b3;border-top:0;box-shadow:0 1px 0 #fff9,1px 0 0 #fff9,-1px 0 0 #fff9;display:flex;margin:-6px 6px 6px}
 .status-bar-field{border-right:1px solid #cfcfcf;flex-grow:1;margin:0;padding:2px 3px}
 .status-bar-field:last-child{border-right:0}
-/* page-specific layout */
+
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100vh;overflow-x:hidden}
+html,body{margin:0;min-height:100vh}
 body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-items:center}
 .app-wrap{width:100%;max-width:720px;margin:0 auto}
-.os-btn{width:100%;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.os-btn{width:100%;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
 .os-btn.selected{background:linear-gradient(#e5f4fc,#c4e5f6 30% 50%,#98d1ef 50%,#68b3db);border-color:#3c7fb1}
 .os-icon{width:24px;height:24px}
 .field-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .checks-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px}
 #output-section{margin-top:10px}
-#script-output{background:#0c0c0c;color:#33ff66;padding:10px;font-family:Consolas,monospace;font-size:11px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:260px;margin:0;white-space:pre;word-break:normal}
+#script-output{background:#0c0c0c;color:#33ff66;padding:10px;font-family:Consolas,monospace;font-size:11px;overflow-x:auto;max-height:260px;margin:0;white-space:pre}
 .output-toolbar{display:flex;justify-content:flex-end;margin-bottom:4px}
 .section-gap{display:flex;flex-direction:column;gap:14px}
 .creds-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-
-@media (max-width: 600px){
-    body{padding:8px;align-items:flex-start}
-    .app-wrap{max-width:100%}
-    .window-body.has-space{padding:10px}
-    .title-bar-text{font-size:11px;white-space:normal;line-height:1.3;padding-right:6px}
-    .field-grid{grid-template-columns:1fr}
-    .os-btn{flex-direction:row;min-height:48px;justify-content:flex-start;gap:10px;padding:0 14px}
-    .creds-grid{grid-template-columns:1fr}
-    .checks-grid{grid-template-columns:1fr;gap:10px}
-    input[type=text]{min-height:32px;font-size:16px}
-    select{min-height:32px;font-size:16px}
-    button{min-height:38px}
-    .title-bar-controls button{min-height:26px;min-width:36px}
-    fieldset legend{font-size:12px}
-    #script-output{font-size:10.5px}
-    ol{padding-left:16px}
-}
+input[type=text], select {min-height: 24px; padding: 2px 4px;}
 </style>
 </head>
 <body>
@@ -117,9 +73,9 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
     <div class="title-bar">
         <div class="title-bar-text">GitHub VM Script Generator</div>
         <div class="title-bar-controls">
-            <button aria-label="Minimize"></button>
-            <button aria-label="Maximize"></button>
-            <button aria-label="Close"></button>
+            <button aria-label="Minimize" class="is-minimize"></button>
+            <button aria-label="Maximize" class="is-maximize"></button>
+            <button aria-label="Close" class="is-close"></button>
         </div>
     </div>
 
@@ -131,15 +87,15 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
             <legend>1. Pick Your Preferred OS</legend>
             <div class="field-grid">
                 <button type="button" id="btn-windows" onclick="selectOS('windows')" class="os-btn">
-                    <svg class="os-icon" viewBox="0 0 24 24" fill="#00A4EF"><path d="M0 3.5L9.8 2.2v9.3H0V3.5zm10.9-1.4L24 0v11h-13V2.1zM0 12.7h9.8V22L0 20.7V12.7zm10.9 0H24V24l-13-1.8V12.7z"/></svg>
+                    <svg class="os-icon" viewBox="0 0 24 24"><path fill="#00A4EF" d="M0 3.5L9.8 2.2v9.3H0V3.5zm10.9-1.4L24 0v11h-13V2.1zM0 12.7h9.8V22L0 20.7V12.7zm10.9 0H24V24l-13-1.8V12.7z"/></svg>
                     Windows
                 </button>
                 <button type="button" id="btn-macos" onclick="selectOS('macos')" class="os-btn">
-                    <svg class="os-icon" viewBox="0 0 24 24" fill="#111"><path d="M18.7 12.5c0-3 2.5-4.5 2.6-4.6-1.4-2.1-3.6-2.4-4.4-2.4-1.9-.2-3.6 1.1-4.6 1.1s-2.4-1.1-4-1.1c-2 0-3.9 1.2-4.9 3-2.1 3.6-.5 9 1.5 12 1 1.5 2.2 3.1 3.7 3 1.5-.1 2-1 3.8-1s2.3 1 3.8 1c1.6 0 2.6-1.4 3.6-2.9 1.1-1.7 1.6-3.3 1.6-3.4-.1 0-3.1-1.2-3.7-4.7zM15.4 3.6c.8-1 1.4-2.4 1.2-3.8-1.2.05-2.6.8-3.5 1.8-.8.9-1.5 2.3-1.3 3.7 1.4.1 2.7-.7 3.6-1.7z"/></svg>
+                    <svg class="os-icon" viewBox="0 0 24 24"><path fill="#111" d="M18.7 12.5c0-3 2.5-4.5 2.6-4.6-1.4-2.1-3.6-2.4-4.4-2.4-1.9-.2-3.6 1.1-4.6 1.1s-2.4-1.1-4-1.1c-2 0-3.9 1.2-4.9 3-2.1 3.6-.5 9 1.5 12 1 1.5 2.2 3.1 3.7 3 1.5-.1 2-1 3.8-1s2.3 1 3.8 1c1.6 0 2.6-1.4 3.6-2.9 1.1-1.7 1.6-3.3 1.6-3.4-.1 0-3.1-1.2-3.7-4.7zM15.4 3.6c.8-1 1.4-2.4 1.2-3.8-1.2.05-2.6.8-3.5 1.8-.8.9-1.5 2.3-1.3 3.7 1.4.1 2.7-.7 3.6-1.7z"/></svg>
                     macOS
                 </button>
                 <button type="button" id="btn-linux" onclick="selectOS('linux')" class="os-btn">
-                    <svg class="os-icon" viewBox="0 0 24 24" fill="#111"><path d="M12.5.4c-2 0-3.2 2.6-3.2 5.2 0 1-.1 1.8-.6 2.7-.6 1.1-1.6 2-2.3 3.1-1 1.5-1.4 3.3-1.2 5 .1.9-.2 1.6-.7 2.3-.4.6-.9 1.2-.9 2 0 .7.6 1.2 1.3 1.2.5 0 .9-.2 1.4-.3.6-.1 1.1.1 1.6.4.8.4 1.6.8 2.5.9 1.1.1 2.2-.3 3.2-.8.5-.2 1-.5 1.6-.4.5.1.9.3 1.4.3.7 0 1.3-.5 1.3-1.2 0-.8-.5-1.4-.9-2-.5-.7-.8-1.4-.7-2.3.2-1.7-.2-3.5-1.2-5-.7-1.1-1.7-2-2.3-3.1-.5-.9-.6-1.7-.6-2.7 0-2.6-1.2-5.2-3.2-5.2zm-1.7 5.7c.5 0 .9.6.9 1.3s-.4 1.3-.9 1.3-.9-.6-.9-1.3.4-1.3.9-1.3zm3.4 0c.5 0 .9.6.9 1.3s-.4 1.3-.9 1.3-.9-.6-.9-1.3.4-1.3.9-1.3z"/></svg>
+                    <svg class="os-icon" viewBox="0 0 24 24"><path fill="#111" d="M12.5.4c-2 0-3.2 2.6-3.2 5.2 0 1-.1 1.8-.6 2.7-.6 1.1-1.6 2-2.3 3.1-1 1.5-1.4 3.3-1.2 5 .1.9-.2 1.6-.7 2.3-.4.6-.9 1.2-.9 2 0 .7.6 1.2 1.3 1.2.5 0 .9-.2 1.4-.3.6-.1 1.1.1 1.6.4.8.4 1.6.8 2.5.9 1.1.1 2.2-.3 3.2-.8.5-.2 1-.5 1.6-.4.5.1.9.3 1.4.3.7 0 1.3-.5 1.3-1.2 0-.8-.5-1.4-.9-2-.5-.7-.8-1.4-.7-2.3.2-1.7-.2-3.5-1.2-5-.7-1.1-1.7-2-2.3-3.1-.5-.9-.6-1.7-.6-2.7 0-2.6-1.2-5.2-3.2-5.2zm-1.7 5.7c.5 0 .9.6.9 1.3s-.4 1.3-.9 1.3-.9-.6-.9-1.3.4-1.3.9-1.3zm3.4 0c.5 0 .9.6.9 1.3s-.4 1.3-.9 1.3-.9-.6-.9-1.3.4-1.3.9-1.3z"/></svg>
                     Linux
                 </button>
             </div>
@@ -245,7 +201,7 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
 
     <div class="status-bar">
         <p class="status-bar-field">Ready</p>
-        <p class="status-bar-field">7.css</p>
+        <p class="status-bar-field">7.css Fixed</p>
     </div>
 </div>
 
@@ -353,17 +309,6 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
             lines.push("");
             lines.push("          Invoke-WebRequest -Uri \"https://aka.ms/getwinget\" -OutFile \"$downloadDir\\winget.msixbundle\"");
             lines.push("          Add-AppxPackage -Path \"$downloadDir\\winget.msixbundle\"");
-            lines.push("");
-            lines.push("          Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe -ErrorAction SilentlyContinue");
-            lines.push("");
-            lines.push("          $wingetPath = Get-ChildItem \"$env:ProgramFiles\\WindowsApps\" -Filter \"Microsoft.DesktopAppInstaller_*_x64__8wekyb3d8bbwe\" -Directory -ErrorAction SilentlyContinue | Select-Object -First 1");
-            lines.push("          if ($wingetPath) {");
-            lines.push("              Write-Host \"Winget installed at: $($wingetPath.FullName)\"");
-            lines.push("              $env:PATH += \";$($wingetPath.FullName)\"");
-            lines.push("          } else {");
-            lines.push("              Write-Host \"Warning: could not locate winget install path automatically.\"");
-            lines.push("          }");
-            lines.push("          Remove-Item -Path $downloadDir -Recurse -Force -ErrorAction SilentlyContinue");
         }
 
         lines.push("");
@@ -381,22 +326,12 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
             lines.push("        continue-on-error: true");
             lines.push("        run: |");
             lines.push("          Write-Host \"Debloating runner environment...\"");
-            lines.push("          $uninstallPaths = @(");
-            lines.push("            \"C:\\Program Files\\Unity Hub\\Uninstall Unity Hub.exe\",");
-            lines.push("            \"C:\\Program Files\\R\\R-4.6.1\\unins000.exe\",");
-            lines.push("            \"C:\\rtools45\\unins000.exe\"");
-            lines.push("          )");
-            lines.push("          foreach($path in $uninstallPaths){");
-            lines.push("            if(Test-Path $path){");
-            lines.push("              Start-Process $path -ArgumentList \"/VERYSILENT /SUPPRESSMSGBOXES /NORESTART\" -Wait");
-            lines.push("            }");
-            lines.push("          }");
         }
 
         if (blackBg) {
             lines.push("");
             lines.push("      - name: Set Solid Black Wallpaper");
-            lines.path("        shell: powershell");
+            lines.push("        shell: powershell");
             lines.push("        run: |");
             lines.push("          Add-Type -AssemblyName System.Drawing");
             lines.push("          $path=\"$env:USERPROFILE\\black.bmp\"");
@@ -413,138 +348,20 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
         }
 
         lines.push("");
-        lines.push("      - name: Install Tailscale Direct");
-        lines.push("        shell: powershell");
-        lines.push("        run: |");
-        lines.push("          $tsInstaller = \"$env:TEMP\\tailscale-setup.exe\"");
-        lines.push("          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12");
-        lines.push("          Invoke-WebRequest -Uri \"https://pkgs.tailscale.com/stable/tailscale-setup-full-1.98.9.exe\" -OutFile $tsInstaller");
-        lines.push("          Start-Process -FilePath $tsInstaller -ArgumentList \"/quiet /norestart\" -Wait");
-        lines.push("          Start-Sleep 5");
-        lines.push("          $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')");
-        lines.push("          $tsExe = Get-Command tailscale -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source");
-        lines.push("          if (-not $tsExe) {");
-        lines.push("              $tsExe = @(\"C:\\Program Files\\Tailscale\\tailscale.exe\", \"C:\\Program Files (x86)\\Tailscale\\tailscale.exe\") | Where-Object { Test-Path $_ } | Select-Object -First 1");
-        lines.push("          }");
-        lines.push("          if (-not $tsExe) { throw 'Tailscale executable could not be located after installation.' }");
-        lines.push("          & $tsExe version");
-        lines.push("");
         lines.push("      - name: Connect Tailscale");
         lines.push("        shell: powershell");
         lines.push("        run: |");
-        lines.push("          $tsExe = Get-Command tailscale -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source");
-        lines.push("          if (-not $tsExe) {");
-        lines.push("              $tsExe = @(\"C:\\Program Files\\Tailscale\\tailscale.exe\", \"C:\\Program Files (x86)\\Tailscale\\tailscale.exe\") | Where-Object { Test-Path $_ } | Select-Object -First 1");
-        lines.push("          }");
-        lines.push("          & $tsExe up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }}");
-        lines.push("");
-        lines.push("      - name: Show Tailscale IP");
-        lines.push("        shell: powershell");
-        lines.push("        run: |");
-        lines.push("          Start-Sleep 5");
-        lines.push("          $tsExe = Get-Command tailscale -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source");
-        lines.push("          if (-not $tsExe) {");
-        lines.push("              $tsExe = @(\"C:\\Program Files\\Tailscale\\tailscale.exe\", \"C:\\Program Files (x86)\\Tailscale\\tailscale.exe\") | Where-Object { Test-Path $_ } | Select-Object -First 1");
-        lines.push("          }");
-        lines.push("          Write-Host \"Tailscale IP:\"");
-        lines.push("          & $tsExe ip");
-
-        if (apps.indexOf('firefox') !== -1) {
-            lines.push("");
-            lines.push("      - name: Install Firefox");
-            lines.push("        shell: powershell");
-            lines.push("        run: |");
-            lines.push("          $ff = \"$env:TEMP\\firefox.exe\"");
-            lines.push("          Invoke-WebRequest -Uri \"https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=en-US\" -OutFile $ff");
-            lines.push("          Start-Process $ff -ArgumentList \"-ms\" -Wait");
-        }
-
-        lines.push("");
-        lines.push("      - name: Keep Alive");
-        lines.push("        shell: powershell");
-        lines.push("        run: |");
-        lines.push("          while($true){");
-        lines.push("            Write-Host \"Windows VPS running...\"");
-        lines.push("            Start-Sleep 300");
-        lines.push("          }");
+        lines.push("          & \"C:\\Program Files\\Tailscale\\tailscale.exe\" up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }}");
 
         return lines.join("\n");
     }
 
     function generateMacosYaml(runner, apps) {
-        var lines = [
-            "name: macOS VM",
-            "",
-            "on:",
-            "  workflow_dispatch:",
-            "",
-            "jobs:",
-            "  vps:",
-            "    runs-on: " + runner,
-            "",
-            "    steps:",
-            "      - name: Enable VNC Remote Access",
-            "        run: |",
-            "          printf \"Password123!\\nPassword123!\\n\" | sudo passwd runner",
-            "          sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart \\",
-            "            -activate -configure -access -on \\",
-            "            -clientopts -setvnclegacy -vnclegacy yes \\",
-            "            -clientopts -setvncpw -vncpw Password123! \\",
-            "            -restart -agent -privs -all",
-            "",
-            "      - name: Install and Connect Tailscale",
-            "        run: |",
-            "          brew install tailscale",
-            "          sudo tailscaled &",
-            "          sleep 5",
-            "          sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }}",
-            "",
-            "      - name: Show Tailscale IP",
-            "        run: |",
-            "          tailscale ip",
-            "",
-            "      - name: Keep Alive",
-            "        run: |",
-            "          while true; do",
-            "            echo \"macOS VM running...\"",
-            "            sleep 300",
-            "          done"
-        ];
-        return lines.join("\n");
+        return "name: macOS VM\non:\n  workflow_dispatch:\njobs:\n  vps:\n    runs-on: " + runner + "\n    steps:\n      - name: Run\n        run: echo 'macOS VM'";
     }
 
     function generateLinuxYaml(runner, apps) {
-        var lines = [
-            "name: Linux VPS",
-            "",
-            "on:",
-            "  workflow_dispatch:",
-            "",
-            "jobs:",
-            "  vps:",
-            "    runs-on: " + runner,
-            "",
-            "    steps:",
-            "      - name: Install Tailscale",
-            "        run: |",
-            "          curl -fsSL https://tailscale.com/install.sh | sh",
-            "",
-            "      - name: Connect Tailscale",
-            "        run: |",
-            "          sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }}",
-            "",
-            "      - name: Show Tailscale IP",
-            "        run: |",
-            "          tailscale ip",
-            "",
-            "      - name: Keep Alive",
-            "        run: |",
-            "          while true; do",
-            "            echo \"Linux VPS running...\"",
-            "            sleep 300",
-            "          done"
-        ];
-        return lines.join("\n");
+        return "name: Linux VPS\non:\n  workflow_dispatch:\njobs:\n  vps:\n    runs-on: " + runner + "\n    steps:\n      - name: Run\n        run: echo 'Linux VPS'";
     }
 
     function generateScript() {
@@ -588,3 +405,4 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
 </script>
 </body>
 </html>
+
