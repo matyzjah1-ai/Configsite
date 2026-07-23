@@ -52,7 +52,7 @@
                 <label class="block text-sm font-medium text-slate-300">RDP Account Credentials & System Options</label>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs text-slate-400 mb-1">Username</label>
+                        <label class="block text-xs text-slate-400 mb-1">New Username (renames runneradmin)</label>
                         <input type="text" id="win-user" value="runneradmin" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 text-slate-200" placeholder="Username">
                     </div>
                     <div>
@@ -62,8 +62,12 @@
                 </div>
                 <div class="pt-2 border-t border-slate-800/60 space-y-2">
                     <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="win-install-winget" checked class="rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
+                        <span>Install winget (Package Manager)</span>
+                    </label>
+                    <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
                         <input type="checkbox" id="win-debloat" checked class="rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
-                        <span>Debloat Windows (Remove Unity Hub, heavy runtimes, unused SDKs)</span>
+                        <span>Debloat Windows (Remove unused SDKs & packages)</span>
                     </label>
                     <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
                         <input type="checkbox" id="win-black-wallpaper" checked class="rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
@@ -197,7 +201,7 @@
             }
         }
 
-        function generateWindowsYaml(runner, apps, username, password, debloat, blackBg) {
+        function generateWindowsYaml(runner, apps, username, password, debloat, blackBg, installWinget) {
             var lines = [
                 "name: Windows VPS",
                 "",
@@ -209,26 +213,40 @@
                 "    runs-on: " + runner,
                 "",
                 "    steps:",
-                "      - name: Configure RDP User",
+                "      - name: Configure RDP Credentials",
                 "        shell: powershell",
                 "        run: |",
-                "          if (Get-LocalUser -Name '" + username + "' -ErrorAction SilentlyContinue) {",
-                "            net user " + username + " " + password,
-                "          } else {",
-                "            net user " + username + " " + password + " /add",
-                "            net localgroup Administrators " + username + " /add",
+                "          if ('" + username + "' -ne 'runneradmin') {",
+                "            Rename-LocalUser -Name 'runneradmin' -NewName '" + username + "'",
                 "          }",
+                "          net user " + username + " " + password,
                 "          Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name 'fDenyTSConnections' -Value 0",
                 "          Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'",
-                "          Write-Host \"RDP enabled for " + username + "\"",
-                "",
-                "      - name: Optimize RDP Performance",
-                "        shell: powershell",
-                "        run: |",
-                "          reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp\" /v fDisableAudioCapture /t REG_DWORD /d 1 /f",
-                "          reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp\" /v fDisableCam /t REG_DWORD /d 1 /f",
-                "          Write-Host \"RDP optimized\""
+                "          Write-Host \"RDP enabled for " + username + "\""
             ];
+
+            if (installWinget) {
+                lines.push("");
+                lines.push("      - name: Install Winget");
+                lines.push("        shell: powershell");
+                lines.push("        continue-on-error: true");
+                lines.push("        run: |");
+                lines.push("          if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {");
+                lines.push("            Write-Host \"Installing winget...\"");
+                lines.push("            Install-Script -Name winget-install -Force -Confirm:$false");
+                lines.push("            winget-install -Force");
+                lines.push("          } else {");
+                lines.push("            Write-Host \"Winget already installed.\"");
+                lines.push("          }");
+            }
+
+            lines.push("");
+            lines.push("      - name: Optimize RDP Performance");
+            lines.push("        shell: powershell");
+            lines.push("        run: |");
+            lines.push("          reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp\" /v fDisableAudioCapture /t REG_DWORD /d 1 /f");
+            lines.push("          reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp\" /v fDisableCam /t REG_DWORD /d 1 /f");
+            lines.push("          Write-Host \"RDP optimized\"");
 
             if (debloat) {
                 lines.push("");
@@ -407,7 +425,8 @@
                 var winPass = document.getElementById('win-pass').value.trim() || 'Password123!';
                 var debloat = document.getElementById('win-debloat').checked;
                 var blackBg = document.getElementById('win-black-wallpaper').checked;
-                scriptContent = generateWindowsYaml(runnerVersion, selectedApps, winUser, winPass, debloat, blackBg);
+                var installWinget = document.getElementById('win-install-winget').checked;
+                scriptContent = generateWindowsYaml(runnerVersion, selectedApps, winUser, winPass, debloat, blackBg, installWinget);
             } else if (currentOS === 'macos') {
                 scriptContent = generateMacosYaml(runnerVersion, selectedApps);
             } else if (currentOS === 'linux') {
@@ -431,4 +450,3 @@
     </script>
 </body>
 </html>
-
