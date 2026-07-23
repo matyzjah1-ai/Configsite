@@ -194,7 +194,6 @@
             selectedBtn.classList.remove('border-slate-700', 'bg-slate-800');
             selectedBtn.classList.add('border-blue-500', 'bg-blue-950/40');
 
-            // Toggle Credentials input visibility for Windows
             const credsContainer = document.getElementById('windows-creds-container');
             if (os === 'windows') {
                 credsContainer.classList.remove('hidden');
@@ -243,36 +242,35 @@
             let appInstallSteps = '';
             if (apps.includes('roblox')) {
                 appInstallSteps += `
-- name: Install Roblox Studio
-  shell: powershell
-  run: |
-    $installer="$env:TEMP\\RobloxStudioInstaller.exe"
-    Invoke-WebRequest -Uri "https://setup.rbxcdn.com/RobloxStudioInstaller.exe" -OutFile $installer
-    Start-Process $installer
-    $timeout=600
-    $time=0
-    while($time -lt $timeout){
-      $studio=Get-ChildItem "$env:LOCALAPPDATA\\Roblox\\Versions" -Recurse -Filter RobloxStudioBeta.exe -ErrorAction SilentlyContinue
-      if($studio){
-        Write-Host "Roblox Studio installed:"
-        Write-Host $studio.FullName
-        break
-      }
-      Start-Sleep 10
-      $time+=10
-    }
+      - name: Install Roblox Studio
+        shell: powershell
+        run: |
+          $installer = "$env:TEMP\\RobloxStudioInstaller.exe"
+          Invoke-WebRequest -Uri "https://setup.rbxcdn.com/RobloxStudioInstaller.exe" -OutFile $installer
+          Start-Process $installer
+          $timeout = 600
+          $time = 0
+          while ($time -lt $timeout) {
+            $studio = Get-ChildItem "$env:LOCALAPPDATA\\Roblox\\Versions" -Recurse -Filter RobloxStudioBeta.exe -ErrorAction SilentlyContinue
+            if ($studio) {
+              Write-Host "Roblox Studio installed: $($studio.FullName)"
+              break
+            }
+            Start-Sleep 10
+            $time += 10
+          }
 `;
             }
 
             const wingetApps = apps.filter(a => a !== 'roblox').map(a => appPackages.windows[a]);
             if (wingetApps.length > 0) {
                 appInstallSteps += `
-- name: Install Apps via Winget
-  shell: powershell
-  run: |
+      - name: Install Apps via Winget
+        shell: powershell
+        run: |
 `;
                 wingetApps.forEach(pkg => {
-                    appInstallSteps += `    winget install --id ${pkg} --silent --accept-package-agreements --accept-source-agreements\n`;
+                    appInstallSteps += `          winget install --id ${pkg} --silent --accept-package-agreements --accept-source-agreements\n`;
                 });
             }
 
@@ -285,61 +283,55 @@ jobs:
   vps:
     runs-on: ${runner}
 
-    steps:  
-      - name: Configure RDP  
-        shell: powershell  
-        run: |  
-          net user ${username} ${password} /add
+    steps:
+      - name: Configure RDP
+        shell: powershell
+        run: |
+          net user ${username} "${password}" /add
           net localgroup Administrators ${username} /add
-          net user ${username} ${password}
+          Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name "fDenyTSConnections" -Value 0
+          Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+          Write-Host "RDP configured for user: ${username}"
 
-          Set-ItemProperty \`  
-            -Path "HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server" \`  
-            -Name "fDenyTSConnections" \`  
-            -Value 0  
+      - name: Optimize RDP Performance
+        shell: powershell
+        run: |
+          reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp" /v fDisableAudioCapture /t REG_DWORD /d 1 /f
+          reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp" /v fDisableCam /t REG_DWORD /d 1 /f
+          Write-Host "RDP optimized"
 
-          Enable-NetFirewallRule -DisplayGroup "Remote Desktop"  
-          Write-Host "RDP configured for user: ${username}"  
+      - name: Set Dark Mode
+        shell: powershell
+        run: |
+          reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v AppsUseLightTheme /t REG_DWORD /d 0 /f
+          reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
+          Write-Host "Dark mode enabled"
 
-      - name: Optimize RDP Performance  
-        shell: powershell  
-        run: |  
-          reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp" /v fDisableAudioCapture /t REG_DWORD /d 1 /f  
-          reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp" /v fDisableCam /t REG_DWORD /d 1 /f  
-          Write-Host "RDP optimized"  
+      - name: Install Tailscale
+        shell: powershell
+        run: |
+          winget install --id Tailscale.Tailscale --silent --accept-package-agreements --accept-source-agreements
+          Start-Sleep 15
+          & "C:\\Program Files\\Tailscale\\tailscale.exe" version
 
-      - name: Set Dark Mode  
-        shell: powershell  
-        run: |  
-          reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v AppsUseLightTheme /t REG_DWORD /d 0 /f  
-          reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f  
-          Write-Host "Dark mode enabled"  
+      - name: Connect Tailscale
+        shell: powershell
+        run: |
+          & "C:\\Program Files\\Tailscale\\tailscale.exe" up --authkey=\${{ secrets.TAILSCALE_AUTH_KEY }}
 
-      - name: Install Tailscale  
-        shell: powershell  
-        run: |  
-          winget install --id Tailscale.Tailscale --silent --accept-package-agreements --accept-source-agreements  
-          Start-Sleep 15  
-          & "C:\\Program Files\\Tailscale\\tailscale.exe" version  
-
-      - name: Connect Tailscale  
-        shell: powershell  
-        run: |  
-          & "C:\\Program Files\\Tailscale\\tailscale.exe" up --authkey=\${{ secrets.TAILSCALE_AUTH_KEY }}  
-
-      - name: Show Tailscale IP  
-        shell: powershell  
-        run: |  
-          Start-Sleep 10  
-          Write-Host "Tailscale IP:"  
-          & "C:\\Program Files\\Tailscale\\tailscale.exe" ip  
+      - name: Show Tailscale IP
+        shell: powershell
+        run: |
+          Start-Sleep 10
+          Write-Host "Tailscale IP:"
+          & "C:\\Program Files\\Tailscale\\tailscale.exe" ip
 ${appInstallSteps}
-      - name: Keep Alive  
-        shell: powershell  
-        run: |  
-          while($true){  
-            Write-Host "Windows VPS running..."  
-            Start-Sleep 300  
+      - name: Keep Alive
+        shell: powershell
+        run: |
+          while ($true) {
+            Write-Host "Windows VPS running..."
+            Start-Sleep 300
           }`;
         }
 
@@ -455,3 +447,4 @@ ${appInstallSteps}
     </script>
 </body>
 </html>
+
