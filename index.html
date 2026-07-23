@@ -6,140 +6,140 @@
     <title>GitHub VM Script Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://khang-nd.github.io/7.css/dist/7.css">
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col items-center py-10 px-4">
+<body class="bg-[#008080] text-black font-sans min-h-screen flex flex-col items-center py-10 px-4">
 
-    <div class="w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+    <div class="window w-full max-w-3xl">
         
         <!-- Header -->
-        <div class="bg-slate-850 border-b border-slate-800 p-6 text-center">
-            <h1 class="text-2xl font-bold tracking-tight text-white flex items-center justify-center gap-3">
-                <i class="fa-solid fa-terminal text-blue-500"></i> Github VM Script Generator
-            </h1>
-            <p class="text-slate-400 text-sm mt-1">Generate automated workflow scripts for self-hosted cloud environments via GitHub Actions.</p>
+        <div class="title-bar">
+            <div class="title-bar-text flex items-center gap-2">
+                <i class="fa-solid fa-terminal"></i> Github VM Script Generator
+            </div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize"></button>
+                <button aria-label="Maximize"></button>
+                <button aria-label="Close"></button>
+            </div>
         </div>
 
-        <div class="p-8 space-y-8">
+        <div class="window-body space-y-6">
+            <p class="text-xs text-gray-600 mb-4">Generate automated workflow scripts for self-hosted cloud environments via GitHub Actions.</p>
 
             <!-- Step 1: OS Selection -->
-            <div>
-                <label class="block text-sm font-medium text-slate-300 mb-3">1. Pick Your Preferred OS</label>
-                <div class="grid grid-cols-3 gap-4">
-                    <button type="button" id="btn-windows" onclick="selectOS('windows')" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-blue-500 bg-blue-950/40 transition-all cursor-pointer">
-                        <i class="fa-brands fa-windows text-3xl mb-2 text-blue-400"></i>
-                        <span class="font-medium text-sm">Windows</span>
+            <fieldset>
+                <legend>1. Pick Your Preferred OS</legend>
+                <div class="grid grid-cols-3 gap-4 pt-2">
+                    <button type="button" id="btn-windows" onclick="selectOS('windows')" class="os-btn flex flex-col items-center justify-center p-3 cursor-pointer">
+                        <i class="fa-brands fa-windows text-2xl mb-1 text-blue-600"></i>
+                        <span class="font-medium text-xs">Windows</span>
                     </button>
-                    <button type="button" id="btn-macos" onclick="selectOS('macos')" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-slate-700 bg-slate-800 hover:border-blue-500 transition-all cursor-pointer">
-                        <i class="fa-brands fa-apple text-3xl mb-2 text-slate-200"></i>
-                        <span class="font-medium text-sm">macOS</span>
+                    <button type="button" id="btn-macos" onclick="selectOS('macos')" class="os-btn flex flex-col items-center justify-center p-3 cursor-pointer">
+                        <i class="fa-brands fa-apple text-2xl mb-1"></i>
+                        <span class="font-medium text-xs">macOS</span>
                     </button>
-                    <button type="button" id="btn-linux" onclick="selectOS('linux')" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-slate-700 bg-slate-800 hover:border-blue-500 transition-all cursor-pointer">
-                        <i class="fa-brands fa-linux text-3xl mb-2 text-slate-200"></i>
-                        <span class="font-medium text-sm">Linux</span>
+                    <button type="button" id="btn-linux" onclick="selectOS('linux')" class="os-btn flex flex-col items-center justify-center p-3 cursor-pointer">
+                        <i class="fa-brands fa-linux text-2xl mb-1"></i>
+                        <span class="font-medium text-xs">Linux</span>
                     </button>
                 </div>
-            </div>
+            </fieldset>
 
             <!-- Step 2: Version Selection -->
-            <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">2. Pick your Version</label>
-                <select id="os-version" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-slate-200 cursor-pointer">
-                </select>
+            <div class="field-row-stacked">
+                <label for="os-version" class="font-bold text-xs">2. Pick your Version</label>
+                <select id="os-version" class="w-full"></select>
             </div>
 
             <!-- Windows Credentials Step -->
-            <div id="windows-creds-container" class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-5 space-y-4">
-                <label class="block text-sm font-medium text-slate-300">RDP Account Credentials & System Options</label>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">New Username (renames runneradmin)</label>
-                        <input type="text" id="win-user" value="runneradmin" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 text-slate-200" placeholder="Username">
+            <fieldset id="windows-creds-container">
+                <legend>RDP Account Credentials & System Options</legend>
+                <div class="grid grid-cols-2 gap-4 mb-3">
+                    <div class="field-row-stacked">
+                        <label class="text-xs">New Username</label>
+                        <input type="text" id="win-user" value="runneradmin" class="w-full">
                     </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Password</label>
-                        <input type="text" id="win-pass" value="Password123!" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 text-slate-200" placeholder="Password">
+                    <div class="field-row-stacked">
+                        <label class="text-xs">Password</label>
+                        <input type="text" id="win-pass" value="Password123!" class="w-full">
                     </div>
                 </div>
-                <div class="pt-2 border-t border-slate-800/60 space-y-2">
-                    <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
-                        <input type="checkbox" id="win-install-winget" checked class="rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
-                        <span>Install winget (Package Manager)</span>
-                    </label>
-                    <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
-                        <input type="checkbox" id="win-debloat" checked class="rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
-                        <span>Debloat Windows (Remove unused SDKs & packages)</span>
-                    </label>
-                    <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
-                        <input type="checkbox" id="win-black-wallpaper" checked class="rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
-                        <span>Set Solid Black Wallpaper (Faster RDP)</span>
-                    </label>
+                <div class="space-y-2 pt-2 border-t border-gray-300">
+                    <div class="field-row">
+                        <input type="checkbox" id="win-install-winget" checked>
+                        <label for="win-install-winget" class="text-xs">Install winget (Package Manager)</label>
+                    </div>
+                    <div class="field-row">
+                        <input type="checkbox" id="win-debloat" checked>
+                        <label for="win-debloat" class="text-xs">Debloat Windows (Remove unused SDKs & packages)</label>
+                    </div>
+                    <div class="field-row">
+                        <input type="checkbox" id="win-black-wallpaper" checked>
+                        <label for="win-black-wallpaper" class="text-xs">Set Solid Black Wallpaper (Faster RDP)</label>
+                    </div>
                 </div>
-            </div>
+            </fieldset>
 
             <!-- Step 3: Remote Provider Setup -->
-            <div class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-5 space-y-4">
-                <label class="block text-sm font-medium text-slate-300">3. Remote Connection Provider</label>
-                <div class="flex items-center gap-2 text-sm text-slate-300 font-medium">
-                    <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> Tailscale
+            <fieldset>
+                <legend>3. Remote Connection Provider</legend>
+                <div class="flex items-center gap-2 text-xs font-bold mb-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block"></span> Tailscale
                 </div>
-                <div class="text-xs text-slate-400 space-y-2 bg-slate-900 p-4 rounded-lg border border-slate-800">
-                    <p class="font-semibold text-slate-200">Setup Process:</p>
-                    <ol class="list-decimal list-inside space-y-1.5 text-slate-300">
+                <div class="text-xs text-gray-700 space-y-1 bg-white p-3 border border-gray-400">
+                    <p class="font-bold">Setup Process:</p>
+                    <ol class="list-decimal list-inside space-y-1 pl-1">
                         <li>Get your API / Auth Token from your Tailscale console.</li>
-                        <li>Ensure key settings are set to:
-                            <ul class="list-disc list-inside pl-4 text-slate-400 mt-0.5">
-                                <li><strong>Reusable</strong></li>
-                                <li><strong>Ephemeral</strong></li>
-                            </ul>
-                        </li>
-                        <li>Go to your GitHub Repository &rarr; <strong>Settings</strong> &rarr; <strong>Secrets and variables</strong> &rarr; <strong>Actions</strong>.</li>
-                        <li>Create a <strong>New repository secret</strong> named <code class="bg-slate-800 text-blue-400 px-1.5 py-0.5 rounded border border-slate-700">TAILSCALE_AUTH_KEY</code> and paste your key value there.</li>
+                        <li>Ensure key settings are: <strong>Reusable</strong>, <strong>Ephemeral</strong>.</li>
+                        <li>Go to GitHub Repository &rarr; <strong>Settings</strong> &rarr; <strong>Secrets</strong> &rarr; <strong>Actions</strong>.</li>
+                        <li>Create secret named <code class="bg-gray-200 px-1 text-blue-800">TAILSCALE_AUTH_KEY</code> and paste value.</li>
                     </ol>
                 </div>
-            </div>
+            </fieldset>
 
             <!-- Step 4: Choose Apps -->
-            <div>
-                <label class="block text-sm font-medium text-slate-300 mb-3">4. Choose apps to install</label>
-                <div class="grid grid-cols-2 gap-3">
-                    <label class="flex items-center space-x-3 p-3 bg-slate-800 border border-slate-700 rounded-xl cursor-pointer hover:border-slate-600">
-                        <input type="checkbox" value="firefox" checked class="app-checkbox rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
-                        <span class="text-sm">Firefox</span>
-                    </label>
-                    <label class="flex items-center space-x-3 p-3 bg-slate-800 border border-slate-700 rounded-xl cursor-pointer hover:border-slate-600">
-                        <input type="checkbox" value="roblox" class="app-checkbox rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
-                        <span class="text-sm">Roblox Studio</span>
-                    </label>
-                    <label class="flex items-center space-x-3 p-3 bg-slate-800 border border-slate-700 rounded-xl cursor-pointer hover:border-slate-600">
-                        <input type="checkbox" value="obs" class="app-checkbox rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
-                        <span class="text-sm">OBS Studio</span>
-                    </label>
-                    <label class="flex items-center space-x-3 p-3 bg-slate-800 border border-slate-700 rounded-xl cursor-pointer hover:border-slate-600">
-                        <input type="checkbox" value="notepadpp" class="app-checkbox rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
-                        <span class="text-sm">Notepad++</span>
-                    </label>
+            <fieldset>
+                <legend>4. Choose apps to install</legend>
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <div class="field-row">
+                        <input type="checkbox" value="firefox" checked class="app-checkbox" id="app-ff">
+                        <label for="app-ff" class="text-xs">Firefox</label>
+                    </div>
+                    <div class="field-row">
+                        <input type="checkbox" value="roblox" class="app-checkbox" id="app-rbx">
+                        <label for="app-rbx" class="text-xs">Roblox Studio</label>
+                    </div>
+                    <div class="field-row">
+                        <input type="checkbox" value="obs" class="app-checkbox" id="app-obs">
+                        <label for="app-obs" class="text-xs">OBS Studio</label>
+                    </div>
+                    <div class="field-row">
+                        <input type="checkbox" value="notepadpp" class="app-checkbox" id="app-npp">
+                        <label for="app-npp" class="text-xs">Notepad++</label>
+                    </div>
                 </div>
-            </div>
+            </fieldset>
 
             <!-- Action Button -->
-            <button type="button" onclick="generateScript()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-blue-600/20 cursor-pointer">
+            <button type="button" onclick="generateScript()" class="w-full py-2 font-bold cursor-pointer">
                 [ Generate Script ]
             </button>
 
             <!-- Output Section -->
-            <div id="output-section" class="hidden space-y-4 pt-4 border-t border-slate-800">
-                <div class="bg-emerald-950/40 border border-emerald-800/60 rounded-xl p-4 text-emerald-300 text-sm space-y-1">
+            <div id="output-section" class="hidden space-y-3 pt-4 border-t border-gray-400">
+                <div class="bg-green-100 border border-green-400 p-3 text-xs text-green-900 space-y-1">
                     <p class="font-bold">Script Generated Successfully!</p>
-                    <p class="text-slate-300 text-xs">Copy this script into <code id="workflow-filename" class="text-amber-300">windows-vps.yml</code> inside your repository's <code class="text-amber-300">.github/workflows/</code> folder.</p>
+                    <p>Copy this script into <code id="workflow-filename" class="text-blue-800 font-bold">windows-vps.yml</code> inside your repository's <code class="text-blue-800 font-bold">.github/workflows/</code> folder.</p>
                 </div>
 
                 <div class="relative">
-                    <div class="flex items-center justify-end bg-slate-950 px-4 py-2 border border-slate-800 rounded-t-xl text-xs text-slate-400">
-                        <button type="button" onclick="copyScript()" class="hover:text-white flex items-center gap-1.5 cursor-pointer bg-slate-800 px-2.5 py-1 rounded border border-slate-700">
+                    <div class="flex items-center justify-end bg-gray-200 px-3 py-1 border-t border-x border-gray-400 text-xs">
+                        <button type="button" onclick="copyScript()" class="cursor-pointer px-2 py-0.5 text-xs">
                             <i class="fa-regular fa-copy"></i> Copy
                         </button>
                     </div>
-                    <pre id="script-output" class="bg-slate-950 p-4 rounded-b-xl border-x border-b border-slate-800 text-xs text-slate-300 overflow-x-auto font-mono max-h-96"></pre>
+                    <pre id="script-output" class="bg-black text-green-400 p-3 border border-gray-400 text-xs overflow-x-auto font-mono max-h-80"></pre>
                 </div>
             </div>
 
@@ -173,21 +173,21 @@
 
             var buttons = document.querySelectorAll('.os-btn');
             for (var i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove('border-blue-500', 'bg-blue-950/40');
-                buttons[i].classList.add('border-slate-700', 'bg-slate-800');
+                buttons[i].style.fontWeight = 'normal';
+                buttons[i].style.background = '';
             }
 
             var selectedBtn = document.getElementById('btn-' + os);
             if (selectedBtn) {
-                selectedBtn.classList.remove('border-slate-700', 'bg-slate-800');
-                selectedBtn.classList.add('border-blue-500', 'bg-blue-950/40');
+                selectedBtn.style.fontWeight = 'bold';
+                selectedBtn.style.background = '#e0e0e0';
             }
 
             var credsContainer = document.getElementById('windows-creds-container');
             if (os === 'windows') {
-                credsContainer.classList.remove('hidden');
+                credsContainer.style.display = 'block';
             } else {
-                credsContainer.classList.add('hidden');
+                credsContainer.style.display = 'none';
             }
 
             var versionSelect = document.getElementById('os-version');
