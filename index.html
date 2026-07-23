@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitHub VM Script Generator</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col items-center py-10 px-4">
@@ -19,21 +19,21 @@
             <p class="text-slate-400 text-sm mt-1">Generate automated workflow scripts for self-hosted cloud environments via GitHub Actions.</p>
         </div>
 
-        <div id="wizard-container" class="p-8 space-y-8">
+        <div class="p-8 space-y-8">
 
             <!-- Step 1: OS Selection -->
             <div>
                 <label class="block text-sm font-medium text-slate-300 mb-3">1. Pick Your Preferred OS</label>
-                <div class="grid grid-cols-3 gap-4" id="os-selector">
-                    <button type="button" id="btn-macos" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-slate-700 bg-slate-800 hover:border-blue-500 transition-all cursor-pointer">
+                <div class="grid grid-cols-3 gap-4">
+                    <button type="button" id="btn-macos" onclick="selectOS('macos')" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-slate-700 bg-slate-800 hover:border-blue-500 transition-all cursor-pointer">
                         <i class="fa-brands fa-apple text-3xl mb-2 text-slate-200"></i>
                         <span class="font-medium text-sm">macOS</span>
                     </button>
-                    <button type="button" id="btn-linux" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-slate-700 bg-slate-800 hover:border-blue-500 transition-all cursor-pointer">
+                    <button type="button" id="btn-linux" onclick="selectOS('linux')" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-slate-700 bg-slate-800 hover:border-blue-500 transition-all cursor-pointer">
                         <i class="fa-brands fa-linux text-3xl mb-2 text-slate-200"></i>
                         <span class="font-medium text-sm">Linux</span>
                     </button>
-                    <button type="button" id="btn-windows" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-blue-500 bg-blue-950/40 transition-all cursor-pointer">
+                    <button type="button" id="btn-windows" onclick="selectOS('windows')" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-blue-500 bg-blue-950/40 transition-all cursor-pointer">
                         <i class="fa-brands fa-windows text-3xl mb-2 text-blue-400"></i>
                         <span class="font-medium text-sm">Windows</span>
                     </button>
@@ -44,13 +44,12 @@
             <div>
                 <label class="block text-sm font-medium text-slate-300 mb-2">2. Pick your Version</label>
                 <select id="os-version" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-slate-200 cursor-pointer">
-                    <!-- Populated dynamically -->
                 </select>
             </div>
 
             <!-- Windows Credentials Step -->
             <div id="windows-creds-container" class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-5 space-y-4">
-                <label class="block text-sm font-medium text-slate-300">RDP Account Credentials</label>
+                <label class="block text-sm font-medium text-slate-300">RDP Account Credentials & Clean Options</label>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">Username</label>
@@ -60,6 +59,16 @@
                         <label class="block text-xs text-slate-400 mb-1">Password</label>
                         <input type="text" id="win-pass" value="Password123!" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 text-slate-200" placeholder="Password">
                     </div>
+                </div>
+                <div class="pt-2 border-t border-slate-800/60 space-y-2">
+                    <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="win-debloat" checked class="rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
+                        <span>Remove preinstalled bloatware (VS, Chrome, Node, Edge, etc.)</span>
+                    </label>
+                    <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="win-black-wallpaper" checked class="rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
+                        <span>Set Solid Black Wallpaper (Faster RDP)</span>
+                    </label>
                 </div>
             </div>
 
@@ -88,7 +97,7 @@
             <!-- Step 4: Choose Apps -->
             <div>
                 <label class="block text-sm font-medium text-slate-300 mb-3">4. Choose your apps to be installed</label>
-                <div class="grid grid-cols-2 gap-3" id="apps-container">
+                <div class="grid grid-cols-2 gap-3">
                     <label class="flex items-center space-x-3 p-3 bg-slate-800 border border-slate-700 rounded-xl cursor-pointer hover:border-slate-600">
                         <input type="checkbox" value="firefox" checked class="app-checkbox rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
                         <span class="text-sm">Firefox</span>
@@ -113,7 +122,7 @@
             </div>
 
             <!-- Action Button -->
-            <button type="button" id="btn-generate" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-blue-600/20 cursor-pointer">
+            <button type="button" onclick="generateScript()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-blue-600/20 cursor-pointer">
                 [ Generate Script ]
             </button>
 
@@ -128,7 +137,7 @@
                 <div class="relative">
                     <div class="flex items-center justify-between bg-slate-950 px-4 py-2 border border-slate-800 rounded-t-xl text-xs text-slate-400">
                         <span id="workflow-filename">windows-vps.yml</span>
-                        <button type="button" id="btn-copy" class="hover:text-white flex items-center gap-1.5 cursor-pointer bg-slate-800 px-2.5 py-1 rounded border border-slate-700">
+                        <button type="button" onclick="copyScript()" class="hover:text-white flex items-center gap-1.5 cursor-pointer bg-slate-800 px-2.5 py-1 rounded border border-slate-700">
                             <i class="fa-regular fa-copy"></i> Copy
                         </button>
                     </div>
@@ -140,312 +149,411 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const versions = {
-                windows: [
-                    { name: 'Windows 2025', value: 'windows-2025' },
-                    { name: 'Windows 2022', value: 'windows-2022' },
-                    { name: 'Windows 2019', value: 'windows-2019' }
-                ],
-                macos: [
-                    { name: 'macOS 15 (Sequoia)', value: 'macos-15' },
-                    { name: 'macOS 14 (Sonoma)', value: 'macos-14' },
-                    { name: 'macOS 13 (Ventura)', value: 'macos-13' }
-                ],
-                linux: [
-                    { name: 'Ubuntu 24.04 LTS', value: 'ubuntu-24.04' },
-                    { name: 'Ubuntu 22.04 LTS', value: 'ubuntu-22.04' },
-                    { name: 'Ubuntu 20.04 LTS', value: 'ubuntu-20.04' }
-                ]
-            };
+        var versions = {
+            windows: [
+                { name: 'Windows 2025', value: 'windows-2025' },
+                { name: 'Windows 2022', value: 'windows-2022' },
+                { name: 'Windows 2019', value: 'windows-2019' }
+            ],
+            macos: [
+                { name: 'macOS 16 (Tahoe)', value: 'macos-16' },
+                { name: 'macOS 15 (Sequoia)', value: 'macos-15' },
+                { name: 'macOS 14 (Sonoma)', value: 'macos-14' },
+                { name: 'macOS 13 (Ventura)', value: 'macos-13' }
+            ],
+            linux: [
+                { name: 'Ubuntu 24.04 LTS', value: 'ubuntu-24.04' },
+                { name: 'Ubuntu 24.04 ARM / Slim', value: 'ubuntu-24.04-arm64' },
+                { name: 'Ubuntu 22.04 LTS', value: 'ubuntu-22.04' },
+                { name: 'Ubuntu 20.04 LTS', value: 'ubuntu-20.04' }
+            ]
+        };
 
-            const appPackages = {
-                windows: {
-                    firefox: 'Mozilla.Firefox',
-                    obs: 'OBSProject.OBSStudio',
-                    discord: 'Discord.Discord',
-                    notepadpp: 'Notepad++.Notepad++'
-                },
-                macos: {
-                    firefox: 'firefox',
-                    obs: 'obs',
-                    discord: 'discord',
-                    notepadpp: 'notepad-plus-plus'
-                },
-                linux: {
-                    firefox: 'firefox',
-                    obs: 'obs-studio',
-                    discord: 'discord',
-                    notepadpp: 'notepad-plus-plus'
-                }
-            };
+        var appPackages = {
+            windows: {
+                firefox: 'Mozilla.Firefox',
+                obs: 'OBSProject.OBSStudio',
+                discord: 'Discord.Discord',
+                notepadpp: 'Notepad++.Notepad++'
+            },
+            macos: {
+                firefox: 'firefox',
+                obs: 'obs',
+                discord: 'discord',
+                notepadpp: 'notepad-plus-plus'
+            },
+            linux: {
+                firefox: 'firefox',
+                obs: 'obs-studio',
+                discord: 'discord',
+                notepadpp: 'notepad-plus-plus'
+            }
+        };
 
-            let currentOS = 'windows';
+        var currentOS = 'windows';
 
-            function selectOS(os) {
-                currentOS = os;
-                
-                document.querySelectorAll('.os-btn').forEach(btn => {
-                    btn.classList.remove('border-blue-500', 'bg-blue-950/40');
-                    btn.classList.add('border-slate-700', 'bg-slate-800');
-                });
-                
-                const selectedBtn = document.getElementById(`btn-${os}`);
-                if (selectedBtn) {
-                    selectedBtn.classList.remove('border-slate-700', 'bg-slate-800');
-                    selectedBtn.classList.add('border-blue-500', 'bg-blue-950/40');
-                }
+        function selectOS(os) {
+            currentOS = os;
 
-                const credsContainer = document.getElementById('windows-creds-container');
-                if (os === 'windows') {
-                    credsContainer.classList.remove('hidden');
-                } else {
-                    credsContainer.classList.add('hidden');
-                }
-
-                const versionSelect = document.getElementById('os-version');
-                versionSelect.innerHTML = '';
-                versions[os].forEach(v => {
-                    const opt = document.createElement('option');
-                    opt.value = v.value;
-                    opt.textContent = v.name;
-                    versionSelect.appendChild(opt);
-                });
+            var buttons = document.querySelectorAll('.os-btn');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('border-blue-500', 'bg-blue-950/40');
+                buttons[i].classList.add('border-slate-700', 'bg-slate-800');
             }
 
-            function generateWindowsYaml(runner, apps, username, password) {
-                let appInstallSteps = '';
-                if (apps.includes('roblox')) {
-                    appInstallSteps += '\n      - name: Install Roblox Studio\n' +
-                        '        shell: powershell\n' +
-                        '        run: |\n' +
-                        '          $installer = "$env:TEMP/RobloxStudioInstaller.exe"\n' +
-                        '          Invoke-WebRequest -Uri "https://setup.rbxcdn.com/RobloxStudioInstaller.exe" -OutFile $installer\n' +
-                        '          Start-Process $installer\n' +
-                        '          $timeout = 600\n' +
-                        '          $time = 0\n' +
-                        '          while ($time -lt $timeout) {\n' +
-                        '            $studio = Get-ChildItem "$env:LOCALAPPDATA/Roblox/Versions" -Recurse -Filter RobloxStudioBeta.exe -ErrorAction SilentlyContinue\n' +
-                        '            if ($studio) {\n' +
-                        '              Write-Host "Roblox Studio installed: $($studio.FullName)"\n' +
-                        '              break\n' +
-                        '            }\n' +
-                        '            Start-Sleep 10\n' +
-                        '            $time += 10\n' +
-                        '          }\n';
-                }
-
-                const wingetApps = apps.filter(a => a !== 'roblox').map(a => appPackages.windows[a]);
-                if (wingetApps.length > 0) {
-                    appInstallSteps += '\n      - name: Install Apps via Winget\n' +
-                        '        shell: powershell\n' +
-                        '        run: |\n';
-                    wingetApps.forEach(pkg => {
-                        appInstallSteps += `          winget install --id ${pkg} --silent --accept-package-agreements --accept-source-agreements\n`;
-                    });
-                }
-
-                return `name: Windows VPS
-
-on:
-  workflow_dispatch:
-
-jobs:
-  vps:
-    runs-on: ${runner}
-
-    steps:
-      - name: Configure RDP
-        shell: powershell
-        run: |
-          net user ${username} "${password}" /add
-          net localgroup Administrators ${username} /add
-          Set-ItemProperty -Path 'HKLM:/System/CurrentControlSet/Control/Terminal Server' -Name 'fDenyTSConnections' -Value 0
-          Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'
-          Write-Host "RDP configured for user: ${username}"
-
-      - name: Optimize RDP Performance
-        shell: powershell
-        run: |
-          Set-ItemProperty -Path 'HKLM:/SYSTEM/CurrentControlSet/Control/Terminal Server/WinStations/RDP-Tcp' -Name 'fDisableAudioCapture' -Value 1
-          Set-ItemProperty -Path 'HKLM:/SYSTEM/CurrentControlSet/Control/Terminal Server/WinStations/RDP-Tcp' -Name 'fDisableCam' -Value 1
-          Write-Host "RDP optimized"
-
-      - name: Set Dark Mode
-        shell: powershell
-        run: |
-          Set-ItemProperty -Path 'HKCU:/Software/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name 'AppsUseLightTheme' -Value 0
-          Set-ItemProperty -Path 'HKCU:/Software/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name 'SystemUsesLightTheme' -Value 0
-          Write-Host "Dark mode enabled"
-
-      - name: Install Tailscale
-        shell: powershell
-        run: |
-          winget install --id Tailscale.Tailscale --silent --accept-package-agreements --accept-source-agreements
-          Start-Sleep 15
-          $tsPath = "$env:ProgramFiles/Tailscale/tailscale.exe"
-          Start-Process $tsPath -ArgumentList "version" -NoNewWindow -Wait
-
-      - name: Connect Tailscale
-        shell: powershell
-        run: |
-          $tsPath = "$env:ProgramFiles/Tailscale/tailscale.exe"
-          Start-Process $tsPath -ArgumentList "up --authkey=\${{ secrets.TAILSCALE_AUTH_KEY }}" -NoNewWindow -Wait
-
-      - name: Show Tailscale IP
-        shell: powershell
-        run: |
-          Start-Sleep 10
-          Write-Host "Tailscale IP:"
-          $tsPath = "$env:ProgramFiles/Tailscale/tailscale.exe"
-          Start-Process $tsPath -ArgumentList "ip" -NoNewWindow -Wait
-${appInstallSteps}
-      - name: Keep Alive
-        shell: powershell
-        run: |
-          while ($true) {
-            Write-Host "Windows VPS running..."
-            Start-Sleep 300
-          }`;
+            var selectedBtn = document.getElementById('btn-' + os);
+            if (selectedBtn) {
+                selectedBtn.classList.remove('border-slate-700', 'bg-slate-800');
+                selectedBtn.classList.add('border-blue-500', 'bg-blue-950/40');
             }
 
-            function generateMacosYaml(runner, apps) {
-                let appInstallSteps = '';
-                const brewCasks = apps.filter(a => a !== 'roblox').map(a => appPackages.macos[a]);
-
-                if (apps.includes('roblox')) {
-                    appInstallSteps += '\n      - name: Note on Roblox Studio\n' +
-                        '        run: echo "Roblox Studio is not natively supported in headless macOS CI environments without GUI session creation."\n';
-                }
-
-                if (brewCasks.length > 0) {
-                    appInstallSteps += '\n      - name: Install Selected Apps via Homebrew\n' +
-                        '        run: |\n';
-                    brewCasks.forEach(cask => {
-                        appInstallSteps += `          brew install --cask ${cask} || true\n`;
-                    });
-                }
-
-                return `name: macOS VM
-
-on:
-  workflow_dispatch:
-
-jobs:
-  vps:
-    runs-on: ${runner}
-
-    steps:
-      - name: Install Tailscale
-        run: |
-          brew install tailscale
-          sudo tailscaled &
-          sleep 5
-
-      - name: Connect Tailscale
-        run: |
-          sudo tailscale up --authkey=\${{ secrets.TAILSCALE_AUTH_KEY }}
-
-      - name: Show Tailscale IP
-        run: |
-          tailscale ip
-${appInstallSteps}
-      - name: Keep Alive
-        run: |
-          while true; do
-            echo "macOS VM running..."
-            sleep 300
-          done`;
+            var credsContainer = document.getElementById('windows-creds-container');
+            if (os === 'windows') {
+                credsContainer.classList.remove('hidden');
+            } else {
+                credsContainer.classList.add('hidden');
             }
 
-            function generateLinuxYaml(runner, apps) {
-                let appInstallSteps = '';
-                const aptApps = apps.filter(a => a !== 'roblox' && a !== 'notepadpp').map(a => appPackages.linux[a]);
+            var versionSelect = document.getElementById('os-version');
+            versionSelect.innerHTML = '';
+            var list = versions[os] || [];
+            for (var j = 0; j < list.length; j++) {
+                var opt = document.createElement('option');
+                opt.value = list[j].value;
+                opt.textContent = list[j].name;
+                versionSelect.appendChild(opt);
+            }
+        }
 
-                if (aptApps.length > 0) {
-                    appInstallSteps += '\n      - name: Install Selected Apps via APT\n' +
-                        '        run: |\n' +
-                        '          sudo apt-get update\n' +
-                        `          sudo apt-get install -y ${aptApps.join(' ')}\n`;
-                }
+        function generateWindowsYaml(runner, apps, username, password, debloat, blackBg) {
+            var lines = [
+                "name: Windows VPS",
+                "",
+                "on:",
+                "  workflow_dispatch:",
+                "",
+                "jobs:",
+                "  vps:",
+                "    runs-on: " + runner,
+                "",
+                "    steps:",
+                "      - name: Configure RDP",
+                "        shell: powershell",
+                "        run: |",
+                "          net user " + username + " " + password + " /add",
+                "          net localgroup Administrators " + username + " /add",
+                "          Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name 'fDenyTSConnections' -Value 0",
+                "          Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'",
+                "          Write-Host \"RDP enabled\"",
+                "",
+                "      - name: Optimize RDP Performance",
+                "        shell: powershell",
+                "        run: |",
+                "          reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp\" /v fDisableAudioCapture /t REG_DWORD /d 1 /f",
+                "          reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp\" /v fDisableCam /t REG_DWORD /d 1 /f",
+                "          Write-Host \"RDP optimized\"",
+                "",
+                "      - name: Disable WSL",
+                "        shell: powershell",
+                "        continue-on-error: true",
+                "        run: |",
+                "          dism.exe /online /disable-feature /featurename:Microsoft-Windows-Subsystem-Linux /norestart",
+                "          dism.exe /online /disable-feature /featurename:VirtualMachinePlatform /norestart",
+                "          Write-Host \"WSL disabled\"",
+                "",
+                "      - name: Set Dark Mode",
+                "        shell: powershell",
+                "        run: |",
+                "          reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v AppsUseLightTheme /t REG_DWORD /d 0 /f",
+                "          reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f",
+                "          reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v EnableTransparency /t REG_DWORD /d 0 /f",
+                "          Write-Host \"Dark mode enabled\""
+            ];
 
-                if (apps.includes('notepadpp')) {
-                    appInstallSteps += '\n      - name: Install Notepad++ via Snap\n' +
-                        '        run: sudo snap install notepad-plus-plus\n';
-                }
-
-                return `name: Linux VPS
-
-on:
-  workflow_dispatch:
-
-jobs:
-  vps:
-    runs-on: ${runner}
-
-    steps:
-      - name: Install Tailscale
-        run: |
-          curl -fsSL https://tailscale.com/install.sh | sh
-
-      - name: Connect Tailscale
-        run: |
-          sudo tailscale up --authkey=\${{ secrets.TAILSCALE_AUTH_KEY }}
-
-      - name: Show Tailscale IP
-        run: |
-          tailscale ip
-${appInstallSteps}
-      - name: Keep Alive
-        run: |
-          while true; do
-            echo "Linux VPS running..."
-            sleep 300
-          done`;
+            if (blackBg) {
+                lines.push("");
+                lines.push("      - name: Create Black Wallpaper");
+                lines.push("        shell: powershell");
+                lines.push("        run: |");
+                lines.push("          Add-Type -AssemblyName System.Drawing");
+                lines.push("          $path=\"$env:USERPROFILE\\black.bmp\"");
+                lines.push("          $bmp=New-Object System.Drawing.Bitmap 1920,1080");
+                lines.push("          $gfx=[System.Drawing.Graphics]::FromImage($bmp)");
+                lines.push("          $gfx.Clear([System.Drawing.Color]::Black)");
+                lines.push("          $bmp.Save($path)");
+                lines.push("          $gfx.Dispose()");
+                lines.push("          $bmp.Dispose()");
+                lines.push("          reg add \"HKCU\\Control Panel\\Desktop\" /v Wallpaper /t REG_SZ /d $path /f");
+                lines.push("");
+                lines.push("      - name: Refresh Explorer");
+                lines.push("        shell: powershell");
+                lines.push("        run: |");
+                lines.push("          Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue");
+                lines.push("          Start-Sleep 3");
+                lines.push("          Start-Process explorer.exe");
             }
 
-            function generateScript() {
-                const runnerVersion = document.getElementById('os-version').value;
-                const selectedApps = [];
-                document.querySelectorAll('.app-checkbox:checked').forEach(cb => {
-                    selectedApps.push(cb.value);
-                });
-
-                document.getElementById('workflow-filename').textContent = `${currentOS}-vps.yml`;
-
-                let scriptContent = '';
-
-                if (currentOS === 'windows') {
-                    const winUser = document.getElementById('win-user').value.trim() || 'runneradmin';
-                    const winPass = document.getElementById('win-pass').value.trim() || 'Password123!';
-                    scriptContent = generateWindowsYaml(runnerVersion, selectedApps, winUser, winPass);
-                } else if (currentOS === 'macos') {
-                    scriptContent = generateMacosYaml(runnerVersion, selectedApps);
-                } else if (currentOS === 'linux') {
-                    scriptContent = generateLinuxYaml(runnerVersion, selectedApps);
-                }
-
-                document.getElementById('script-output').textContent = scriptContent.trim();
-                document.getElementById('output-section').classList.remove('hidden');
+            if (debloat) {
+                lines.push("");
+                lines.push("      - name: Remove Software");
+                lines.push("        shell: powershell");
+                lines.push("        continue-on-error: true");
+                lines.push("        run: |");
+                lines.push("          $uninstallPaths = @(");
+                lines.push("            \"C:\\Program Files\\Unity Hub\\Uninstall Unity Hub.exe\",");
+                lines.push("            \"C:\\Program Files\\R\\R-4.6.1\\unins000.exe\",");
+                lines.push("            \"C:\\rtools45\\unins000.exe\"");
+                lines.push("          )");
+                lines.push("          foreach($path in $uninstallPaths){");
+                lines.push("            if(Test-Path $path){");
+                lines.push("              Write-Host \"Uninstalling $path\"");
+                lines.push("              Start-Process $path -ArgumentList \"/VERYSILENT /SUPPRESSMSGBOXES /NORESTART\" -Wait");
+                lines.push("            }");
+                lines.push("          }");
+                lines.push("          $apps=@(");
+                lines.push("            \"Google Chrome\", \"CMake\", \"Inno Setup 6\", \"Blend for Visual Studio\",");
+                lines.push("            \"MySQL\", \"Node.js\", \"Microsoft Visual Studio\", \"Git\",");
+                lines.push("            \"Microsoft Web Platform Installer\", \"ImageMagick\", \"Web Pages\", \"OpenSSL\",");
+                lines.push("            \"Microsoft Azure Service Fabric SDK\", \"MongoDB Server\", \"Windows Subsystem for Linux\",");
+                lines.push("            \"Feedback Hub\", \"PostgreSQL 17\", \"StrawberryPerl\", \"MongoDB Shell\",");
+                lines.push("            \"AWS SAM Command Line Interface\", \"AWS Command Line Interface v2\", \"IIS 10.0 Express\",");
+                lines.push("            \"Wix Toolset v3.14.1.8722\", \"sbt 1.12.12\", \"Windows SDK AddOn\", \"Windows Security\"");
+                lines.push("          )");
+                lines.push("          foreach($app in $apps){");
+                lines.push("            Write-Host \"Removing $app\"");
+                lines.push("            winget uninstall \"$app\" --accept-source-agreements --silent --disable-interactivity");
+                lines.push("          }");
+                lines.push("");
+                lines.push("      - name: Remove Edge");
+                lines.push("        shell: powershell");
+                lines.push("        continue-on-error: true");
+                lines.push("        run: |");
+                lines.push("          $edge=Get-ChildItem \"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\" -Recurse -Filter setup.exe -ErrorAction SilentlyContinue | Select-Object -First 1");
+                lines.push("          if($edge){");
+                lines.push("            Start-Process $edge.FullName -ArgumentList \"--uninstall --system-level --force-uninstall\" -Wait");
+                lines.push("          }");
             }
 
-            // Attach event listeners safely
-            document.getElementById('btn-macos').addEventListener('click', () => selectOS('macos'));
-            document.getElementById('btn-linux').addEventListener('click', () => selectOS('linux'));
-            document.getElementById('btn-windows').addEventListener('click', () => selectOS('windows'));
+            lines.push("");
+            lines.push("      - name: Install Tailscale");
+            lines.push("        shell: powershell");
+            lines.push("        run: |");
+            lines.push("          winget install --id Tailscale.Tailscale --silent --accept-package-agreements --accept-source-agreements");
+            lines.push("          Start-Sleep 15");
+            lines.push("          & \"C:\\Program Files\\Tailscale\\tailscale.exe\" version");
+            lines.push("");
+            lines.push("      - name: Connect Tailscale");
+            lines.push("        shell: powershell");
+            lines.push("        run: |");
+            lines.push("          & \"C:\\Program Files\\Tailscale\\tailscale.exe\" up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }}");
+            lines.push("");
+            lines.push("      - name: Show Tailscale IP");
+            lines.push("        shell: powershell");
+            lines.push("        run: |");
+            lines.push("          Start-Sleep 10");
+            lines.push("          Write-Host \"Tailscale IP:\"");
+            lines.push("          & \"C:\\Program Files\\Tailscale\\tailscale.exe\" ip");
 
-            document.getElementById('btn-generate').addEventListener('click', generateScript);
+            if (apps.indexOf('roblox') !== -1) {
+                lines.push("");
+                lines.push("      - name: Install Roblox Studio");
+                lines.push("        shell: powershell");
+                lines.push("        run: |");
+                lines.push("          $installer=\"$env:TEMP\\RobloxStudioInstaller.exe\"");
+                lines.push("          Invoke-WebRequest -Uri \"https://setup.rbxcdn.com/RobloxStudioInstaller.exe\" -OutFile $installer");
+                lines.push("          Start-Process $installer");
+                lines.push("          $timeout=600");
+                lines.push("          $time=0");
+                lines.push("          while($time -lt $timeout){");
+                lines.push("            $studio=Get-ChildItem \"$env:LOCALAPPDATA\\Roblox\\Versions\" -Recurse -Filter RobloxStudioBeta.exe -ErrorAction SilentlyContinue");
+                lines.push("            if($studio){");
+                lines.push("              Write-Host \"Roblox Studio installed:\"");
+                lines.push("              Write-Host $studio.FullName");
+                lines.push("              break");
+                lines.push("            }");
+                lines.push("            Start-Sleep 10");
+                lines.push("            $time+=10");
+                lines.push("          }");
+            }
 
-            document.getElementById('btn-copy').addEventListener('click', () => {
-                const text = document.getElementById('script-output').textContent;
-                navigator.clipboard.writeText(text).then(() => {
-                    alert('Script copied to clipboard!');
-                });
+            var wingetApps = [];
+            for (var k = 0; k < apps.length; k++) {
+                if (apps[k] !== 'roblox' && appPackages.windows[apps[k]]) {
+                    wingetApps.push(appPackages.windows[apps[k]]);
+                }
+            }
+
+            if (wingetApps.length > 0) {
+                lines.push("");
+                lines.push("      - name: Install Apps via Winget");
+                lines.push("        shell: powershell");
+                lines.push("        run: |");
+                for (var m = 0; m < wingetApps.length; m++) {
+                    lines.push("          winget install --id " + wingetApps[m] + " --silent --accept-package-agreements --accept-source-agreements");
+                }
+            }
+
+            lines.push("");
+            lines.push("      - name: Keep Alive");
+            lines.push("        shell: powershell");
+            lines.push("        run: |");
+            lines.push("          while($true){");
+            lines.push("            Write-Host \"Windows VPS running...\"");
+            lines.push("            Start-Sleep 300");
+            lines.push("          }");
+
+            return lines.join("\n");
+        }
+
+        function generateMacosYaml(runner, apps) {
+            var lines = [
+                "name: macOS VM",
+                "",
+                "on:",
+                "  workflow_dispatch:",
+                "",
+                "jobs:",
+                "  vps:",
+                "    runs-on: " + runner,
+                "",
+                "    steps:",
+                "      - name: Install Tailscale",
+                "        run: |",
+                "          brew install tailscale",
+                "          sudo tailscaled &",
+                "          sleep 5",
+                "",
+                "      - name: Connect Tailscale",
+                "        run: |",
+                "          sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }}",
+                "",
+                "      - name: Show Tailscale IP",
+                "        run: |",
+                "          tailscale ip"
+            ];
+
+            if (apps.indexOf('roblox') !== -1) {
+                lines.push("      - name: Note on Roblox Studio");
+                lines.push("        run: echo \"Roblox Studio is not natively supported in headless macOS CI environments without GUI session creation.\"");
+            }
+
+            var brewCasks = [];
+            for (var k = 0; k < apps.length; k++) {
+                if (apps[k] !== 'roblox' && appPackages.macos[apps[k]]) {
+                    brewCasks.push(appPackages.macos[apps[k]]);
+                }
+            }
+
+            if (brewCasks.length > 0) {
+                lines.push("      - name: Install Selected Apps via Homebrew");
+                lines.push("        run: |");
+                for (var m = 0; m < brewCasks.length; m++) {
+                    lines.push("          brew install --cask " + brewCasks[m] + " || true");
+                }
+            }
+
+            lines.push("      - name: Keep Alive");
+            lines.push("        run: |");
+            lines.push("          while true; do");
+            lines.push("            echo \"macOS VM running...\"");
+            lines.push("            sleep 300");
+            lines.push("          done");
+
+            return lines.join("\n");
+        }
+
+        function generateLinuxYaml(runner, apps) {
+            var lines = [
+                "name: Linux VPS",
+                "",
+                "on:",
+                "  workflow_dispatch:",
+                "",
+                "jobs:",
+                "  vps:",
+                "    runs-on: " + runner,
+                "",
+                "    steps:",
+                "      - name: Install Tailscale",
+                "        run: |",
+                "          curl -fsSL https://tailscale.com/install.sh | sh",
+                "",
+                "      - name: Connect Tailscale",
+                "        run: |",
+                "          sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }}",
+                "",
+                "      - name: Show Tailscale IP",
+                "        run: |",
+                "          tailscale ip"
+            ];
+
+            var aptApps = [];
+            for (var k = 0; k < apps.length; k++) {
+                if (apps[k] !== 'roblox' && apps[k] !== 'notepadpp' && appPackages.linux[apps[k]]) {
+                    aptApps.push(appPackages.linux[apps[k]]);
+                }
+            }
+
+            if (aptApps.length > 0) {
+                lines.push("      - name: Install Selected Apps via APT");
+                lines.push("        run: |");
+                lines.push("          sudo apt-get update");
+                lines.push("          sudo apt-get install -y " + aptApps.join(' '));
+            }
+
+            if (apps.indexOf('notepadpp') !== -1) {
+                lines.push("      - name: Install Notepad++ via Snap");
+                lines.push("        run: sudo snap install notepad-plus-plus");
+            }
+
+            lines.push("      - name: Keep Alive");
+            lines.push("        run: |");
+            lines.push("          while true; do");
+            lines.push("            echo \"Linux VPS running...\"");
+            lines.push("            sleep 300");
+            lines.push("          done");
+
+            return lines.join("\n");
+        }
+
+        function generateScript() {
+            var runnerVersion = document.getElementById('os-version').value;
+            var checkboxes = document.querySelectorAll('.app-checkbox:checked');
+            var selectedApps = [];
+            for (var i = 0; i < checkboxes.length; i++) {
+                selectedApps.push(checkboxes[i].value);
+            }
+
+            document.getElementById('workflow-filename').textContent = currentOS + '-vps.yml';
+
+            var scriptContent = '';
+            if (currentOS === 'windows') {
+                var winUser = document.getElementById('win-user').value.trim() || 'runneradmin';
+                var winPass = document.getElementById('win-pass').value.trim() || 'Password123!';
+                var debloat = document.getElementById('win-debloat').checked;
+                var blackBg = document.getElementById('win-black-wallpaper').checked;
+                scriptContent = generateWindowsYaml(runnerVersion, selectedApps, winUser, winPass, debloat, blackBg);
+            } else if (currentOS === 'macos') {
+                scriptContent = generateMacosYaml(runnerVersion, selectedApps);
+            } else if (currentOS === 'linux') {
+                scriptContent = generateLinuxYaml(runnerVersion, selectedApps);
+            }
+
+            document.getElementById('script-output').textContent = scriptContent;
+            document.getElementById('output-section').classList.remove('hidden');
+        }
+
+        function copyScript() {
+            var text = document.getElementById('script-output').textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Script copied to clipboard!');
             });
+        }
 
-            // Initialize Windows view
+        window.onload = function() {
             selectOS('windows');
-        });
+        };
     </script>
 </body>
 </html>
+
