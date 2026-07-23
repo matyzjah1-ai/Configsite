@@ -147,15 +147,14 @@
                 { name: 'Windows 2019', value: 'windows-2019' }
             ],
             macos: [
-                { name: 'MacOS Tahoe (26)', value: 'macos-15' },
-                { name: 'MacOS 15', value: 'macos-15' },
-                { name: 'MacOS 14', value: 'macos-14' }
+                { name: 'macOS 15 (Sequoia)', value: 'macos-15' },
+                { name: 'macOS 14 (Sonoma)', value: 'macos-14' },
+                { name: 'macOS 13 (Ventura)', value: 'macos-13' }
             ],
             linux: [
-                { name: 'Ubuntu 26.04', value: 'ubuntu-24.04' },
-                { name: 'Ubuntu 24.04', value: 'ubuntu-24.04' },
-                { name: 'Ubuntu 22.04', value: 'ubuntu-22.04' },
-                { name: 'Ubuntu Slim', value: 'ubuntu-20.04' }
+                { name: 'Ubuntu 24.04 LTS', value: 'ubuntu-24.04' },
+                { name: 'Ubuntu 22.04 LTS', value: 'ubuntu-22.04' },
+                { name: 'Ubuntu 20.04 LTS', value: 'ubuntu-20.04' }
             ]
         };
 
@@ -191,8 +190,10 @@
             });
             
             const selectedBtn = document.getElementById(`btn-${os}`);
-            selectedBtn.classList.remove('border-slate-700', 'bg-slate-800');
-            selectedBtn.classList.add('border-blue-500', 'bg-blue-950/40');
+            if (selectedBtn) {
+                selectedBtn.classList.remove('border-slate-700', 'bg-slate-800');
+                selectedBtn.classList.add('border-blue-500', 'bg-blue-950/40');
+            }
 
             const credsContainer = document.getElementById('windows-creds-container');
             if (os === 'windows') {
@@ -210,8 +211,6 @@
                 versionSelect.appendChild(opt);
             });
         }
-
-        selectOS('windows');
 
         function generateScript() {
             const runnerVersion = document.getElementById('os-version').value;
@@ -312,13 +311,13 @@ jobs:
         run: |
           winget install --id Tailscale.Tailscale --silent --accept-package-agreements --accept-source-agreements
           Start-Sleep 15
-          $tsPath = "${env:ProgramFiles}/Tailscale/tailscale.exe"
+          $tsPath = "\${env:ProgramFiles}/Tailscale/tailscale.exe"
           Start-Process $tsPath -ArgumentList "version" -NoNewWindow -Wait
 
       - name: Connect Tailscale
         shell: powershell
         run: |
-          $tsPath = "${env:ProgramFiles}/Tailscale/tailscale.exe"
+          $tsPath = "\${env:ProgramFiles}/Tailscale/tailscale.exe"
           Start-Process $tsPath -ArgumentList "up --authkey=\${{ secrets.TAILSCALE_AUTH_KEY }}" -NoNewWindow -Wait
 
       - name: Show Tailscale IP
@@ -326,7 +325,7 @@ jobs:
         run: |
           Start-Sleep 10
           Write-Host "Tailscale IP:"
-          $tsPath = "${env:ProgramFiles}/Tailscale/tailscale.exe"
+          $tsPath = "\${env:ProgramFiles}/Tailscale/tailscale.exe"
           Start-Process $tsPath -ArgumentList "ip" -NoNewWindow -Wait
 ${appInstallSteps}
       - name: Keep Alive
@@ -447,7 +446,9 @@ ${appInstallSteps}
                 alert('Script copied to clipboard!');
             });
         }
+
+        // Initialize default view on script load
+        selectOS('windows');
     </script>
 </body>
 </html>
-
