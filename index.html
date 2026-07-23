@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GitHub VM Script Generator</title>
 <style>
-/*! 7.css v0.21.1 - https://khang-nd.github.io/7.css (inlined: unpkg.com and icons8.com are blocked inside the artifact sandbox, so the external stylesheet + icon images silently failed to load before) */
+/*! 7.css v0.21.1 - https://khang-nd.github.io/7.css */
 :root{--w7-font:9pt "Segoe UI","SegoeUI","Noto Sans",sans-serif;--w7-surface:#f0f0f0;--w7-el-bg:#f2f2f2;--w7-el-bg-d:#f4f4f4;--w7-el-bg-s-1:#ebebeb;--w7-el-bg-s-2:#cfcfcf;--w7-el-sd:inset 0 0 0 1px #fffc;--w7-el-sd-a:inset 1px 1px 0 #0003,inset -1px 1px 0 #0001;--w7-el-bd:#8e8f8f;--w7-el-bd-h:#3c7fb1;--w7-el-bd-a:#6d91ab;--w7-el-bd-d:#adb2b5;--w7-el-bdr:3px;--w7-el-c:#000;--w7-el-c-d:#838383;--w7-el-grad:linear-gradient(var(--w7-el-bg) 45%,var(--w7-el-bg-s-1) 45%,var(--w7-el-bg-s-2));--w7-el-grad-h:linear-gradient(#eaf6fd 45%,#bee6fd 0,#a7d9f5);--w7-el-grad-a:linear-gradient(#e5f4fc,#c4e5f6 30% 50%,#98d1ef 50%,#68b3db)}
 body{color:#222;font-family:"Segoe UI","SegoeUI","Noto Sans",sans-serif;font-size:9pt}
 [role=button],button,input[type=file]::file-selector-button{background:var(--w7-el-grad);border:1px solid var(--w7-el-bd);border-radius:var(--w7-el-bdr);box-shadow:var(--w7-el-sd);box-sizing:border-box;color:#222;font:var(--w7-font);min-height:23px;min-width:75px;padding:0 12px;position:relative;text-align:center;z-index:0}
@@ -30,11 +30,11 @@ input[type=checkbox]:focus-visible+label{outline:1px dotted #000}
 input[type=checkbox]:checked+label:after{color:#4a5f97;content:"\2714";display:block;font-weight:700;left:2px;position:absolute;top:0}
 input[type=checkbox]:disabled+label{color:#6d6d6d}
 input[type=checkbox]:disabled+label:before{background:linear-gradient(to bottom right,#f0f0f0,#fbfbfb);border:1px solid #b1b1b1;box-shadow:none}
-select:not([multiple]){-webkit-appearance:none;-moz-appearance:none;appearance:none;background:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTExIDZINHYxaDF2MWgxdjFoMXYxaDFWOWgxVjhoMVY3aDFWNloiIGZpbGw9IiMwMDAiLz48L3N2Zz4="),var(--w7-el-grad);background-position:100%;background-repeat:no-repeat;border:1px solid var(--w7-el-bd);border-radius:var(--w7-el-bdr);box-shadow:var(--w7-el-sd);box-sizing:border-box;color:#222;font:var(--w7-font);padding:2px 30px 2px 3px;position:relative}
+select:not([multiple]){-webkit-appearance:none;-moz-appearance:none;appearance:none;background:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTExIDZINHYxaDF2MWgxdjFoHXYxaDFWOWgxVjhoMVY3aDFWNloiIGZpbGw9IiMwMDAiLz48L3N2Zz4="),var(--w7-el-grad);background-position:100%;background-repeat:no-repeat;border:1px solid var(--w7-el-bd);border-radius:var(--w7-el-bdr);box-shadow:var(--w7-el-sd);box-sizing:border-box;color:#222;font:var(--w7-font);padding:2px 30px 2px 3px;position:relative}
 select:not([multiple]):not(:disabled):hover{border-color:var(--w7-el-bd-h)}
 select:not([multiple]):not(:disabled):active{border-color:var(--w7-el-bd-a);box-shadow:var(--w7-el-sd-a);outline:none}
 select:not([multiple]):not(:disabled):focus{box-shadow:inset 0 0 0 2px #98d1ef;outline:1px dotted #000;outline-offset:-4px}
-select:not([multiple]):disabled{background:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTExIDZINHYxaDF2MWgxdjFoMXYxaDFWOWgxVjhoMVY3aDFWNloiIGZpbGw9IiNhZmFmYWYiLz48L3N2Zz4="),var(--w7-el-bg-d);background-position:100%;background-repeat:no-repeat;border-color:var(--w7-el-bd-d);color:var(--w7-el-c-d);opacity:1}
+select:not([multiple]):disabled{background:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTExIDZINHYxaDF2MWgxdjFoHXYxaDFWOWgxVjhoMVY3aDFWNloiIGZpbGw9IiNhZmFmYWYiLz48L3N2Zz4="),var(--w7-el-bg-d);background-position:100%;background-repeat:no-repeat;border-color:var(--w7-el-bd-d);color:var(--w7-el-c-d);opacity:1}
 fieldset{border:1px solid #cdd7db;border-radius:var(--w7-el-bdr);box-shadow:inset 0 0 0 1px #fff;margin:0;padding:8px 10px 10px}
 fieldset legend{font:var(--w7-font)}
 .group,fieldset{display:flex;flex-direction:column;gap:6px}
@@ -76,7 +76,7 @@ input[type=radio]:disabled+label{filter:grayscale(1);opacity:.6}
 .status-bar{background:#f0f0f0;border:1px solid #000000b3;border-top:0;box-shadow:0 1px 0 #fff9,1px 0 0 #fff9,-1px 0 0 #fff9;display:flex;margin:-6px 6px 6px}
 .status-bar-field{border-right:1px solid #cfcfcf;flex-grow:1;margin:0;padding:2px 3px}
 .status-bar-field:last-child{border-right:0}
-/* page-specific layout (not part of 7.css) */
+/* page-specific layout */
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100vh;overflow-x:hidden}
 body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-items:center}
@@ -92,7 +92,6 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
 .section-gap{display:flex;flex-direction:column;gap:14px}
 .creds-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-/* Mobile: stack columns, bigger touch targets, tighter chrome */
 @media (max-width: 600px){
     body{padding:8px;align-items:flex-start}
     .app-wrap{max-width:100%}
@@ -149,7 +148,7 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
         <!-- Step 2: Version Selection -->
         <div class="group">
             <label for="os-version">2. Pick your Version</label>
-            <select id="os-version" style="width: 100%;"></select>
+            <select id="os-version" style="width: 100%;" onchange="checkVersionSelection()"></select>
         </div>
 
         <!-- Windows Credentials Step -->
@@ -168,7 +167,7 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
             <div class="group" style="border-top: 1px solid silver; padding-top: 8px;">
                 <div>
                     <input type="checkbox" id="win-install-winget" checked>
-                    <label for="win-install-winget">Install winget (Package Manager)</label>
+                    <label for="win-install-winget" id="lbl-install-winget">Install winget (Package Manager)</label>
                 </div>
                 <div>
                     <input type="checkbox" id="win-debloat" checked>
@@ -296,6 +295,20 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
             opt.textContent = list[j].name;
             versionSelect.appendChild(opt);
         }
+
+        checkVersionSelection();
+    }
+
+    function checkVersionSelection() {
+        var versionSelect = document.getElementById('os-version');
+        var wingetCheckbox = document.getElementById('win-install-winget');
+        
+        if (currentOS === 'windows' && versionSelect.value === 'windows-2025') {
+            wingetCheckbox.checked = false;
+            wingetCheckbox.disabled = true;
+        } else {
+            wingetCheckbox.disabled = false;
+        }
     }
 
     function generateWindowsYaml(runner, apps, username, password, debloat, blackBg, installWinget) {
@@ -322,7 +335,7 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
             "          Write-Host \"RDP enabled for " + username + "\""
         ];
 
-        if (installWinget) {
+        if (installWinget && runner !== 'windows-2025') {
             lines.push("");
             lines.push("      - name: Install Winget");
             lines.push("        shell: powershell");
@@ -383,7 +396,7 @@ body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-i
         if (blackBg) {
             lines.push("");
             lines.push("      - name: Set Solid Black Wallpaper");
-            lines.push("        shell: powershell");
+            lines.path("        shell: powershell");
             lines.push("        run: |");
             lines.push("          Add-Type -AssemblyName System.Drawing");
             lines.push("          $path=\"$env:USERPROFILE\\black.bmp\"");
