@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GitHub VM Script Generator</title>
 <style>
-/*! 7.css v0.21.1 - https://khang-nd.github.io/7.css */
+/*! 7.css v0.21.1 - https://khang-nd.github.io/7.css (inlined: unpkg.com and icons8.com are blocked inside the artifact sandbox, so the external stylesheet + icon images silently failed to load before) */
 :root{--w7-font:9pt "Segoe UI","SegoeUI","Noto Sans",sans-serif;--w7-surface:#f0f0f0;--w7-el-bg:#f2f2f2;--w7-el-bg-d:#f4f4f4;--w7-el-bg-s-1:#ebebeb;--w7-el-bg-s-2:#cfcfcf;--w7-el-sd:inset 0 0 0 1px #fffc;--w7-el-sd-a:inset 1px 1px 0 #0003,inset -1px 1px 0 #0001;--w7-el-bd:#8e8f8f;--w7-el-bd-h:#3c7fb1;--w7-el-bd-a:#6d91ab;--w7-el-bd-d:#adb2b5;--w7-el-bdr:3px;--w7-el-c:#000;--w7-el-c-d:#838383;--w7-el-grad:linear-gradient(var(--w7-el-bg) 45%,var(--w7-el-bg-s-1) 45%,var(--w7-el-bg-s-2));--w7-el-grad-h:linear-gradient(#eaf6fd 45%,#bee6fd 0,#a7d9f5);--w7-el-grad-a:linear-gradient(#e5f4fc,#c4e5f6 30% 50%,#98d1ef 50%,#68b3db)}
 body{color:#222;font-family:"Segoe UI","SegoeUI","Noto Sans",sans-serif;font-size:9pt}
 [role=button],button,input[type=file]::file-selector-button{background:var(--w7-el-grad);border:1px solid var(--w7-el-bd);border-radius:var(--w7-el-bdr);box-shadow:var(--w7-el-sd);box-sizing:border-box;color:#222;font:var(--w7-font);min-height:23px;min-width:75px;padding:0 12px;position:relative;text-align:center;z-index:0}
@@ -79,14 +79,7 @@ input[type=radio]:disabled+label{filter:grayscale(1);opacity:.6}
 /* page-specific layout (not part of 7.css) */
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100vh;overflow-x:hidden}
-body{
-    background: url('1784837178838.jpeg') no-repeat center center fixed;
-    background-size: cover;
-    padding: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-items:center}
 .app-wrap{width:100%;max-width:720px;margin:0 auto}
 .os-btn{width:100%;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .os-btn.selected{background:linear-gradient(#e5f4fc,#c4e5f6 30% 50%,#98d1ef 50%,#68b3db);border-color:#3c7fb1}
