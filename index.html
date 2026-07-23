@@ -232,11 +232,18 @@
                 lines.push("        continue-on-error: true");
                 lines.push("        run: |");
                 lines.push("          if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {");
-                lines.push("            Write-Host \"Installing winget...\"");
-                lines.push("            Install-Script -Name winget-install -Force -Confirm:$false");
-                lines.push("            winget-install -Force");
+                lines.push("            Write-Host \"Installing Winget directly from official release...\"");
+                lines.push("            $progressPreference = 'SilentlyContinue'");
+                lines.push("            $latestRelease = Invoke-RestMethod -Uri \"https://api.github.com/repos/microsoft/winget-cli/releases/latest\"");
+                lines.push("            $asset = $latestRelease.assets | Where-Object { $_.name -like \"*Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle\" }");
+                lines.push("            Invoke-WebRequest -Uri $asset.browser_download_url -OutFile \"$env:TEMP\\winget.msixbundle\"");
+                lines.push("            Invoke-WebRequest -Uri \"https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx\" -OutFile \"$env:TEMP\\vclibs.appx\"");
+                lines.push("            Invoke-WebRequest -Uri \"https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.x64.appx\" -OutFile \"$env:TEMP\\xaml.appx\"");
+                lines.push("            Add-AppxPackage -Path \"$env:TEMP\\vclibs.appx\" -ErrorAction SilentlyContinue");
+                lines.push("            Add-AppxPackage -Path \"$env:TEMP\\xaml.appx\" -ErrorAction SilentlyContinue");
+                lines.push("            Add-AppxPackage -Path \"$env:TEMP\\winget.msixbundle\"");
                 lines.push("          } else {");
-                lines.push("            Write-Host \"Winget already installed.\"");
+                lines.push("            Write-Host \"Winget is already installed.\"");
                 lines.push("          }");
             }
 
@@ -450,3 +457,4 @@
     </script>
 </body>
 </html>
+
