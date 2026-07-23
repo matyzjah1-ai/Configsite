@@ -74,7 +74,7 @@ body {
     font-family: Consolas, monospace;
     font-size: 10px;
     overflow-x: auto;
-    max-height: 220px;
+    max-height: 260px;
     margin: 0;
     white-space: pre;
     border: 1px solid #707070;
@@ -225,7 +225,7 @@ input[type="text"], select {
 
     <div class="status-bar">
         <p class="status-bar-field">Ready</p>
-        <p class="status-bar-field">Generator Fixed</p>
+        <p class="status-bar-field">Fully Functional Generator</p>
     </div>
 </div>
 </div>
@@ -304,41 +304,59 @@ input[type="text"], select {
         }
 
         var scriptContent = "name: " + currentOS.toUpperCase() + " VPS\n" +
-            "on: [workflow_dispatch]\n\n" +
+            "on:\n" +
+            "  workflow_dispatch:\n\n" +
             "jobs:\n" +
-            "  build:\n" +
+            "  vps:\n" +
             "    runs-on: " + runnerVersion + "\n" +
-            "    steps:\n" +
-            "      - name: Checkout Code\n" +
-            "        uses: actions/checkout@v4\n\n";
+            "    steps:\n";
 
         if (currentOS === 'windows') {
-            scriptContent += "      - name: Enable RDP\n" +
+            scriptContent += "      - name: Enable Remote Desktop (RDP)\n" +
                 "        run: |\n" +
                 "          Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name \"fDenyTSConnections\" -Value 0\n" +
                 "          Enable-NetFirewallRule -DisplayGroup \"Remote Desktop\"\n" +
                 "          Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp' -Name \"UserAuthentication\" -Value 1\n\n" +
-                "      - name: Set Administrator Credentials\n" +
+                "      - name: Set Custom User Credentials\n" +
                 "        run: |\n" +
-                "          $account = [adsi]\"WinNT://./$([Environment]::UserName)\"\n" +
-                "          $account.SetPassword('" + password + "')\n";
-            
+                "          $user = '" + username + "'\n" +
+                "          $pass = '" + password + "'\n" +
+                "          if (-not (Get-LocalUser -Name $user -ErrorAction SilentlyContinue)) {\n" +
+                "              New-LocalUser -Name $user -Password (ConvertTo-SecureString $pass -AsPlainText -Force) -FullName $user\n" +
+                "              Add-LocalGroupMember -Group \"Administrators\" -Member $user\n" +
+                "          } else {\n" +
+                "              Set-LocalUser -Name $user -Password (ConvertTo-SecureString $pass -AsPlainText -Force)\n" +
+                "          }\n\n";
+
             if (document.getElementById('win-black-wallpaper').checked) {
-                scriptContent += "\n      - name: Set Black Wallpaper\n" +
-                    "        run: Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name Wallpaper -Value ''\n";
+                scriptContent += "      - name: Set Solid Black Wallpaper\n" +
+                    "        run: |\n" +
+                    "          Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name Wallpaper -Value ''\n" +
+                    "          rundll32.exe user32.dll, UpdatePerUserSystemParameters\n\n";
             }
         }
 
-        scriptContent += "\n      - name: Connect via Tailscale\n" +
+        scriptContent += "      - name: Connect to Tailscale\n" +
             "        uses: tailscale/github-action@v2\n" +
             "        with:\n" +
-            "          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}\n" +
-            "          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}\n" +
             "          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}\n" +
-            "          version: latest\n\n" +
-            "      - name: Keep Runner Alive\n" +
+            "          version: latest\n\n";
+
+        if (apps.length > 0 && currentOS === 'windows') {
+            scriptContent += "      - name: Install Selected Applications\n" +
+                "        run: |\n";
+            for (var k = 0; k < apps.length; k++) {
+                if (apps[k] === 'firefox') scriptContent += "          winget install -e --id Mozilla.Firefox --silent\n";
+                if (apps[k] === 'roblox') scriptContent += "          winget install -e --id Roblox.RobloxStudio --silent\n";
+                if (apps[k] === 'obs') scriptContent += "          winget install -e --id OBSProject.OBSStudio --silent\n";
+                if (apps[k] === 'notepadpp') scriptContent += "          winget install -e --id Notepad++.Notepad++ --silent\n";
+            }
+            scriptContent += "\n";
+        }
+
+        scriptContent += "      - name: Keep Runner Alive\n" +
             "        run: |\n" +
-            "          Write-Host 'VM is ready and connected via Tailscale!'\n" +
+            "          Write-Host 'VM is fully set up and connected via Tailscale!'\n" +
             "          Start-Sleep -Seconds 21600";
 
         document.getElementById('script-output').textContent = scriptContent;
@@ -358,4 +376,3 @@ input[type="text"], select {
 </script>
 </body>
 </html>
-
