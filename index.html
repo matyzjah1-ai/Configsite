@@ -245,13 +245,13 @@
       - name: Install Roblox Studio
         shell: powershell
         run: |
-          $installer = "$env:TEMP\\RobloxStudioInstaller.exe"
+          $installer = "$env:TEMP/RobloxStudioInstaller.exe"
           Invoke-WebRequest -Uri "https://setup.rbxcdn.com/RobloxStudioInstaller.exe" -OutFile $installer
           Start-Process $installer
           $timeout = 600
           $time = 0
           while ($time -lt $timeout) {
-            $studio = Get-ChildItem "$env:LOCALAPPDATA\\Roblox\\Versions" -Recurse -Filter RobloxStudioBeta.exe -ErrorAction SilentlyContinue
+            $studio = Get-ChildItem "$env:LOCALAPPDATA/Roblox/Versions" -Recurse -Filter RobloxStudioBeta.exe -ErrorAction SilentlyContinue
             if ($studio) {
               Write-Host "Roblox Studio installed: $($studio.FullName)"
               break
@@ -289,22 +289,22 @@ jobs:
         run: |
           net user ${username} "${password}" /add
           net localgroup Administrators ${username} /add
-          Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name 'fDenyTSConnections' -Value 0
+          Set-ItemProperty -Path 'HKLM:/System/CurrentControlSet/Control/Terminal Server' -Name 'fDenyTSConnections' -Value 0
           Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'
           Write-Host "RDP configured for user: ${username}"
 
       - name: Optimize RDP Performance
         shell: powershell
         run: |
-          Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp' -Name 'fDisableAudioCapture' -Value 1
-          Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp' -Name 'fDisableCam' -Value 1
+          Set-ItemProperty -Path 'HKLM:/SYSTEM/CurrentControlSet/Control/Terminal Server/WinStations/RDP-Tcp' -Name 'fDisableAudioCapture' -Value 1
+          Set-ItemProperty -Path 'HKLM:/SYSTEM/CurrentControlSet/Control/Terminal Server/WinStations/RDP-Tcp' -Name 'fDisableCam' -Value 1
           Write-Host "RDP optimized"
 
       - name: Set Dark Mode
         shell: powershell
         run: |
-          Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize' -Name 'AppsUseLightTheme' -Value 0
-          Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize' -Name 'SystemUsesLightTheme' -Value 0
+          Set-ItemProperty -Path 'HKCU:/Software/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name 'AppsUseLightTheme' -Value 0
+          Set-ItemProperty -Path 'HKCU:/Software/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name 'SystemUsesLightTheme' -Value 0
           Write-Host "Dark mode enabled"
 
       - name: Install Tailscale
@@ -312,19 +312,22 @@ jobs:
         run: |
           winget install --id Tailscale.Tailscale --silent --accept-package-agreements --accept-source-agreements
           Start-Sleep 15
-          & 'C:\\Program Files\\Tailscale\\tailscale.exe' version
+          $tsPath = "${env:ProgramFiles}/Tailscale/tailscale.exe"
+          Start-Process $tsPath -ArgumentList "version" -NoNewWindow -Wait
 
       - name: Connect Tailscale
         shell: powershell
         run: |
-          & 'C:\\Program Files\\Tailscale\\tailscale.exe' up --authkey=\${{ secrets.TAILSCALE_AUTH_KEY }}
+          $tsPath = "${env:ProgramFiles}/Tailscale/tailscale.exe"
+          Start-Process $tsPath -ArgumentList "up --authkey=\${{ secrets.TAILSCALE_AUTH_KEY }}" -NoNewWindow -Wait
 
       - name: Show Tailscale IP
         shell: powershell
         run: |
           Start-Sleep 10
           Write-Host "Tailscale IP:"
-          & 'C:\\Program Files\\Tailscale\\tailscale.exe' ip
+          $tsPath = "${env:ProgramFiles}/Tailscale/tailscale.exe"
+          Start-Process $tsPath -ArgumentList "ip" -NoNewWindow -Wait
 ${appInstallSteps}
       - name: Keep Alive
         shell: powershell
