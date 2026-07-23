@@ -236,7 +236,7 @@
                 lines.push("          $DepsDir = Join-Path $WorkDir 'DesktopAppInstaller_Dependencies'");
                 lines.push("          New-Item -ItemType Directory -Force -Path $WorkDir | Out-Null");
                 lines.push("");
-                lines.push("          # Get latest stable WinGet release from GitHub");
+                lines.push("          # Get latest stable WinGet release assets");
                 lines.push("          $Release = Invoke-RestMethod -Uri 'https://api.github.com/repos/microsoft/winget-cli/releases/latest'");
                 lines.push("          $MsixBundle = $Release.assets | Where-Object { $_.name -eq 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle' } | Select-Object -First 1");
                 lines.push("          $DependenciesZip = $Release.assets | Where-Object { $_.name -eq 'DesktopAppInstaller_Dependencies.zip' } | Select-Object -First 1");
@@ -250,25 +250,23 @@
                 lines.push("          $DependenciesZipPath = Join-Path $WorkDir 'DesktopAppInstaller_Dependencies.zip'");
                 lines.push("          $LicensePath = Join-Path $WorkDir 'license.xml'");
                 lines.push("");
-                lines.push("          # Download WinGet, dependencies, and license");
+                lines.push("          # Download release packages");
                 lines.push("          Invoke-WebRequest -Uri $MsixBundle.browser_download_url -OutFile $MsixBundlePath");
                 lines.push("          Invoke-WebRequest -Uri $DependenciesZip.browser_download_url -OutFile $DependenciesZipPath");
                 lines.push("          Invoke-WebRequest -Uri $LicenseFile.browser_download_url -OutFile $LicensePath");
                 lines.push("");
-                lines.push("          # Extract and install dependencies");
+                lines.push("          # Extract dependencies");
                 lines.push("          Expand-Archive -Path $DependenciesZipPath -DestinationPath $DepsDir -Force");
-                lines.push("          $Architecture = 'x64'");
-                lines.push("          $DependencyPath = Join-Path $DepsDir $Architecture");
+                lines.push("          $DependencyPath = Join-Path $DepsDir 'x64'");
+                lines.push("          $DepFiles = Get-ChildItem -Path $DependencyPath -File | Where-Object { $_.Extension -in '.appx', '.msix' } | Select-Object -ExpandProperty FullName");
                 lines.push("");
-                lines.push("          Get-ChildItem -Path $DependencyPath -File | Where-Object { $_.Extension -in '.appx', '.msix' } | ForEach-Object {");
-                lines.push("              Add-AppxPackage -Path $_.FullName");
-                lines.push("          }");
+                lines.push("          # System-wide provision via DISM (Bypasses SID mapping error 0x80070534)");
+                lines.push("          Add-AppxProvisionedPackage -Online -PackagePath $MsixBundlePath -LicensePath $LicensePath -DependencyPackagePath $DepFiles");
                 lines.push("");
-                lines.push("          # Provision App Installer / WinGet");
-                lines.push("          Add-AppxProvisionedPackage -Online -PackagePath $MsixBundlePath -LicensePath $LicensePath");
-                lines.push("          Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe");
+                lines.push("          # Register package for user session");
+                lines.push("          Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe -ErrorAction SilentlyContinue");
                 lines.push("");
-                lines.push("          # Verify");
+                lines.push("          # Verify installation");
                 lines.push("          winget --info");
             }
 
