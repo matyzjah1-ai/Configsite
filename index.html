@@ -230,25 +230,46 @@
                 lines.push("      - name: Install Winget");
                 lines.push("        shell: powershell");
                 lines.push("        run: |");
-                lines.push("          Write-Host \"Installing Winget...\"");
+                lines.push("          $ErrorActionPreference = 'Stop'");
+                lines.push("          $ProgressPreference = 'SilentlyContinue'");
+                lines.push("          $WorkDir = Join-Path $env:TEMP 'winget-install'");
+                lines.push("          $DepsDir = Join-Path $WorkDir 'DesktopAppInstaller_Dependencies'");
+                lines.push("          New-Item -ItemType Directory -Force -Path $WorkDir | Out-Null");
                 lines.push("");
-                lines.push("          Invoke-WebRequest `");
-                lines.push("            -Uri \"https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle\" `");
-                lines.push("            -OutFile \"$env:TEMP\\winget.msixbundle\"");
+                lines.push("          # Get latest stable WinGet release from GitHub");
+                lines.push("          $Release = Invoke-RestMethod -Uri 'https://api.github.com/repos/microsoft/winget-cli/releases/latest'");
+                lines.push("          $MsixBundle = $Release.assets | Where-Object { $_.name -eq 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle' } | Select-Object -First 1");
+                lines.push("          $DependenciesZip = $Release.assets | Where-Object { $_.name -eq 'DesktopAppInstaller_Dependencies.zip' } | Select-Object -First 1");
+                lines.push("          $LicenseFile = $Release.assets | Where-Object { $_.name -like '*_License1.xml' } | Select-Object -First 1");
                 lines.push("");
-                lines.push("          Invoke-WebRequest `");
-                lines.push("            -Uri \"https://github.com/microsoft/winget-cli/releases/latest/download/DesktopAppInstaller_Dependencies.zip\" `");
-                lines.push("            -OutFile \"$env:TEMP\\deps.zip\"");
+                lines.push("          if (-not $MsixBundle -or -not $DependenciesZip -or -not $LicenseFile) {");
+                lines.push("              throw 'Could not find all required WinGet release assets.'");
+                lines.push("          }");
                 lines.push("");
-                lines.push("          Expand-Archive \"$env:TEMP\\deps.zip\" \"$env:TEMP\\deps\" -Force");
+                lines.push("          $MsixBundlePath = Join-Path $WorkDir 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle'");
+                lines.push("          $DependenciesZipPath = Join-Path $WorkDir 'DesktopAppInstaller_Dependencies.zip'");
+                lines.push("          $LicensePath = Join-Path $WorkDir 'license.xml'");
                 lines.push("");
-                lines.push("          Add-AppxPackage \"$env:TEMP\\deps\\x64\\Microsoft.VCLibs.x64.14.00.Desktop.appx\"");
+                lines.push("          # Download WinGet, dependencies, and license");
+                lines.push("          Invoke-WebRequest -Uri $MsixBundle.browser_download_url -OutFile $MsixBundlePath");
+                lines.push("          Invoke-WebRequest -Uri $DependenciesZip.browser_download_url -OutFile $DependenciesZipPath");
+                lines.push("          Invoke-WebRequest -Uri $LicenseFile.browser_download_url -OutFile $LicensePath");
                 lines.push("");
-                lines.push("          Add-AppxPackage \"$env:TEMP\\winget.msixbundle\"");
+                lines.push("          # Extract and install dependencies");
+                lines.push("          Expand-Archive -Path $DependenciesZipPath -DestinationPath $DepsDir -Force");
+                lines.push("          $Architecture = 'x64'");
+                lines.push("          $DependencyPath = Join-Path $DepsDir $Architecture");
                 lines.push("");
-                lines.push("          Start-Sleep -Seconds 10");
+                lines.push("          Get-ChildItem -Path $DependencyPath -File | Where-Object { $_.Extension -in '.appx', '.msix' } | ForEach-Object {");
+                lines.push("              Add-AppxPackage -Path $_.FullName");
+                lines.push("          }");
                 lines.push("");
-                lines.push("          winget --version");
+                lines.push("          # Provision App Installer / WinGet");
+                lines.push("          Add-AppxProvisionedPackage -Online -PackagePath $MsixBundlePath -LicensePath $LicensePath");
+                lines.push("          Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe");
+                lines.push("");
+                lines.push("          # Verify");
+                lines.push("          winget --info");
             }
 
             lines.push("");
@@ -461,4 +482,3 @@
     </script>
 </body>
 </html>
-
