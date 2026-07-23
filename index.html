@@ -6,7 +6,7 @@
 <title>GitHub VM Script Generator</title>
 <style>
 :root{--w7-font:9pt "Segoe UI","SegoeUI","Noto Sans",sans-serif;--w7-surface:#f0f0f0;--w7-el-bg:#f2f2f2;--w7-el-bg-d:#f4f4f4;--w7-el-bg-s-1:#ebebeb;--w7-el-bg-s-2:#cfcfcf;--w7-el-sd:inset 0 0 0 1px #fffc;--w7-el-sd-a:inset 1px 1px 0 #0003,inset -1px 1px 0 #0001;--w7-el-bd:#8e8f8f;--w7-el-bd-h:#3c7fb1;--w7-el-bd-a:#6d91ab;--w7-el-bd-d:#adb2b5;--w7-el-bdr:3px;--w7-el-c:#000;--w7-el-c-d:#838383;--w7-el-grad:linear-gradient(var(--w7-el-bg) 45%,var(--w7-el-bg-s-1) 45%,var(--w7-el-bg-s-2));--w7-el-grad-h:linear-gradient(#eaf6fd 45%,#bee6fd 0,#a7d9f5);--w7-el-grad-a:linear-gradient(#e5f4fc,#c4e5f6 30% 50%,#98d1ef 50%,#68b3db)}
-body{color:#222;font-family:"Segoe UI","SegoeUI","Noto Sans",sans-serif;font-size:9pt}
+body{color:#222;font-family:"Segoe UI","SegoeUI","Noto Sans",sans-serif;font-size:9pt;margin:0;padding:8px;background:#3a6ea5;min-height:100vh;display:flex;justify-content:center;align-items:flex-start}
 [role=button],button,input[type=file]::file-selector-button{background:var(--w7-el-grad);border:1px solid var(--w7-el-bd);border-radius:var(--w7-el-bdr);box-shadow:var(--w7-el-sd);box-sizing:border-box;color:#222;font:var(--w7-font);min-height:23px;min-width:75px;padding:0 12px;position:relative;text-align:center;z-index:0}
 [role=button]:before,button:before{background:var(--w7-el-grad-h);border-radius:var(--w7-el-bdr);box-shadow:var(--w7-el-sd)}
 [role=button]:after,[role=button]:before,button:after,button:before{content:"";height:100%;left:0;margin:0;opacity:0;padding:0;position:absolute;top:0;transition:opacity .3s;width:100%;z-index:-1}
@@ -16,70 +16,56 @@ body{color:#222;font-family:"Segoe UI","SegoeUI","Noto Sans",sans-serif;font-siz
 [role=button]:not(:disabled):hover:before,button:not(:disabled):hover:before{opacity:1;transition:opacity .3s}
 [role=button]:not(:disabled).active,[role=button]:not(:disabled):active,button:not(:disabled).active,button:not(:disabled):active{border-color:var(--w7-el-bd-a);transition:border-color .3s}
 [role=button]:not(:disabled).active:after,[role=button]:not(:disabled):active:after,button:not(:disabled).active:after,button:not(:disabled):active:after{opacity:1;transition:opacity .3s}
-[role=button].focused,[role=button]:focus-visible,button.focused,button:focus-visible{box-shadow:inset 0 0 0 2px #98d1ef;outline:1px dotted #000;outline-offset:-4px}
-[role=button].default,[role=button].focused,[role=button]:focus,button.default,button.focused,button:focus{background-image:var(--w7-el-grad-h);border-color:#5586a3}
-:root{--w7-cb-size:14px}
-input[type=checkbox]{appearance:none;-webkit-appearance:none;-moz-appearance:none;background:none;border:none;font:var(--w7-font);margin:0;opacity:0}
-input[type=checkbox]+label{align-items:center;display:inline-flex;font:var(--w7-font);position:relative;cursor:pointer}
-input[type=checkbox]+label:before{background:#f6f6f6;border:1px solid var(--w7-el-bd);box-shadow:inset 0 0 0 1px var(--w7-el-bg-d),inset 1px 1px 0 1px #aeaeae,inset -1px -1px 0 1px #ddd,inset 3px 3px 6px #ccc;box-sizing:border-box;content:"";display:inline-block;height:var(--w7-cb-size);margin-right:6px;transition:.4s;width:var(--w7-cb-size)}
-input[type=checkbox]:checked+label:after{color:#4a5f97;content:"\2714";display:block;font-weight:700;left:2px;position:absolute;top:0}
-input[type=checkbox]:disabled+label{color:#6d6d6d;cursor:not-allowed}
-input[type=checkbox]:disabled+label:before{background:linear-gradient(to bottom right,#f0f0f0,#fbfbfb);border:1px solid #b1b1b1;box-shadow:none}
 
-select:not([multiple]){-webkit-appearance:none;-moz-appearance:none;appearance:none;background:var(--w7-el-grad);background-position:100%;background-repeat:no-repeat;border:1px solid var(--w7-el-bd);border-radius:var(--w7-el-bdr);box-shadow:var(--w7-el-sd);box-sizing:border-box;color:#222;font:var(--w7-font);padding:4px 30px 4px 6px;position:relative}
-fieldset{border:1px solid #cdd7db;border-radius:var(--w7-el-bdr);box-shadow:inset 0 0 0 1px #fff;margin:0;padding:8px 10px 10px}
+:root{--w7-cb-size:14px}
+input[type=checkbox]{appearance:none;-webkit-appearance:none;-moz-appearance:none;background:none;border:none;font:var(--w7-font);margin:0;opacity:0;position:absolute}
+input[type=checkbox]+label{align-items:center;display:inline-flex;font:var(--w7-font);position:relative;cursor:pointer;padding-left:20px}
+input[type=checkbox]+label:before{background:#f6f6f6;border:1px solid var(--w7-el-bd);box-shadow:inset 0 0 0 1px var(--w7-el-bg-d),inset 1px 1px 0 1px #aeaeae,inset -1px -1px 0 1px #ddd,inset 3px 3px 6px #ccc;box-sizing:border-box;content:"";display:inline-block;height:var(--w7-cb-size);left:0;position:absolute;width:var(--w7-cb-size)}
+input[type=checkbox]:checked+label:after{color:#4a5f97;content:"\2714";display:block;font-weight:700;left:2px;position:absolute;top:-1px}
+input[type=checkbox]:disabled+label{color:#6d6d6d;cursor:not-allowed}
+
+select:not([multiple]){-webkit-appearance:none;-moz-appearance:none;appearance:none;background:var(--w7-el-grad);background-position:100%;background-repeat:no-repeat;border:1px solid var(--w7-el-bd);border-radius:var(--w7-el-bdr);box-shadow:var(--w7-el-sd);box-sizing:border-box;color:#222;font:var(--w7-font);padding:4px 30px 4px 6px}
+fieldset{border:1px solid #cdd7db;border-radius:var(--w7-el-bdr);box-shadow:inset 0 0 0 1px #fff;margin:0;padding:8px 10px 10px;min-width:0}
 fieldset legend{font:var(--w7-font)}
 .group,fieldset{display:flex;flex-direction:column;gap:6px}
-.group+.group{margin-top:6px}
 
-.window{border:1px solid #000000b3;border-radius:6px;box-shadow:2px 2px 10px 1px #000000b3,inset 0 0 0 1px #fffa;font:9pt "Segoe UI","SegoeUI","Noto Sans",sans-serif;position:relative;z-index:0}
-.window:before{background:linear-gradient(transparent 20%,#ffffffb3 40%,transparent 41%),linear-gradient(90deg,#ffffff66,#0000001a,#ffffff33),#4580c4;background-color:#4580c4;border-radius:6px;box-shadow:inset 0 0 0 1px #fffd;content:"";height:100%;left:0;position:absolute;top:0;width:100%;z-index:-1}
-.window-body{background:#f0f0f0;border:1px solid #000000b3;box-shadow:0 0 0 1px #fff9;margin:0 6px 6px}
-.window-body.has-space{padding:6px}
-.window footer,.window-footer{background:#f0f0f0;border:1px solid #000000b3;border-top:0;box-shadow:0 .5px 1px .5px #fff;margin:-7px 6px 6px;padding:10px;position:relative}
-.title-bar{align-items:center;background:linear-gradient(90deg,#ffffff66,#0000001a,#ffffff33),#4580c4;background-color:#4580c4;border:1px solid #000000b3;border-radius:6px 6px 0 0;box-shadow:inset 0 0 0 1px #fff9;display:flex;font:9pt "Segoe UI","SegoeUI","Noto Sans",sans-serif;justify-content:space-between;padding:0 6px 6px}
-.title-bar-text{color:#000;letter-spacing:0;line-height:15px;padding-top:6px;text-shadow:0 0 10px #fff,0 0 10px #fff,0 0 10px #fff,0 0 10px #fff}
-.title-bar-controls{background:#fff3;border:1px solid #0000004d;border-radius:0 0 5px 5px;border-top:0;box-shadow:0 1px 0 #fffa,1px 0 0 #fffa,-1px 0 0 #fffa;display:flex}
-.title-bar-controls button{background:none;border:0;border-radius:0;border-right:1px solid #0000004d;box-shadow:none;box-sizing:border-box;min-height:19px;min-width:29px;padding:0;position:relative}
-.title-bar-controls button:after{content:none}
-.title-bar-controls button:before{border-radius:0;bottom:0;box-shadow:inset 0 0 0 1px #fff5;content:"";left:0;opacity:1;position:absolute;right:0;top:0}
-.title-bar-controls button.is-minimize:before{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAFCAYAAABxeg0vAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAA7SURBVHgBlY+xDQAgDMNaiQ9B8AHcxAlI/NYtKwj6QOohUzxYc+1HAqQ3e03qXNpwwcyE5QsAaEGjDRf8ZAza6Bz6VQAAAABJRU5ErkJggg==") no-repeat center 10px}
-.title-bar-controls button.is-maximize:before{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAYAAACALL/6AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABsSURBVHgBlZHBCYAwDEVT6YaKbqArOILgBLqBosP1VkhAaQ6S1lKad+ihPy8kxLT9+IACG57r2KqKu2GCBpTYtEMOOQELzrnv4z53I4vDjjJnwXsPJWTOAiJGHVNB5pGwLjPk+AlEBLUY7eFebCosBHOR7vYAAAAASUVORK5CYII=") no-repeat 50%}
-.title-bar-controls button.is-close:before{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAKCAYAAABi8KSDAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACUSURBVHgBlZFNCoQwDIVbmRvOMHOAAd0K/uDGlYKiCG4VPICi9yu0oCSQoFUXFtKEl6+voZXvr7sKay1TL690FOexY+Hz87i2decOuDKQsNGVe8AGYTRJIh0Y+orBvxszCPllOymlxN06jNE26Qnwg4zdHQLrMhFaawwAqAadDPE1ijwUxhiMKCmxCZk06OMYTz5lAx3xWDeXkLNAAAAAAElFTkSuQmCC") no-repeat 50%}
-.status-bar{background:#f0f0f0;border:1px solid #000000b3;border-top:0;box-shadow:0 1px 0 #fff9,1px 0 0 #fff9,-1px 0 0 #fff9;display:flex;margin:-6px 6px 6px}
-.status-bar-field{border-right:1px solid #cfcfcf;flex-grow:1;margin:0;padding:2px 3px}
-.status-bar-field:last-child{border-right:0}
+.window{background:#f0f0f0;border:1px solid #000000b3;border-radius:6px;box-shadow:2px 2px 10px 1px #000000b3,inset 0 0 0 1px #fffa;font:9pt "Segoe UI","SegoeUI","Noto Sans",sans-serif;position:relative;width:100%;max-width:480px;box-sizing:border-box}
+.window-body{background:#f0f0f0;border:1px solid #000000b3;box-shadow:0 0 0 1px #fff9;margin:6px;padding:8px}
+.title-bar{align-items:center;background:linear-gradient(90deg,#ffffff66,#0000001a,#ffffff33),#4580c4;background-color:#4580c4;border-bottom:1px solid #000000b3;border-radius:5px 5px 0 0;display:flex;height:26px;padding:0 4px 0 8px;justify-content:space-between}
+.title-bar-text{color:#000;font-weight:600;text-shadow:0 0 10px #fff}
+.title-bar-controls{display:flex;gap:2px}
+.title-bar-controls button{background:linear-gradient(#f3f3f3,#e5e5e5);border:1px solid #707070;border-radius:2px;box-shadow:none;min-height:16px;min-width:18px;padding:0;font-size:9px;line-height:10px}
+.status-bar{background:#f0f0f0;border-top:1px solid #cfcfcf;display:flex;margin:0 6px 6px;font-size:8pt}
+.status-bar-field{border-right:1px solid #cfcfcf;flex-grow:1;margin:0;padding:2px 4px}
 
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100vh}
-body{background:#3a6ea5;padding:24px;display:flex;justify-content:center;align-items:center}
-.app-wrap{width:100%;max-width:720px;margin:0 auto}
-.os-btn{width:100%;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+.app-wrap{width:100%;display:flex;justify-content:center}
+.os-btn{width:100%;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:4px}
 .os-btn.selected{background:linear-gradient(#e5f4fc,#c4e5f6 30% 50%,#98d1ef 50%,#68b3db);border-color:#3c7fb1}
-.os-icon{width:24px;height:24px}
-.field-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.checks-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px}
-#output-section{margin-top:10px}
-#script-output{background:#0c0c0c;color:#33ff66;padding:10px;font-family:Consolas,monospace;font-size:11px;overflow-x:auto;max-height:260px;margin:0;white-space:pre}
+.os-icon{width:20px;height:20px}
+.field-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
+.checks-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#script-output{background:#0c0c0c;color:#33ff66;padding:8px;font-family:Consolas,monospace;font-size:10px;overflow-x:auto;max-height:200px;margin:0;white-space:pre}
 .output-toolbar{display:flex;justify-content:flex-end;margin-bottom:4px}
-.section-gap{display:flex;flex-direction:column;gap:14px}
-.creds-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-input[type=text], select {min-height: 24px; padding: 2px 4px;}
+.section-gap{display:flex;flex-direction:column;gap:10px}
+.creds-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+input[type=text], select {min-height: 24px; padding: 2px 4px; width:100%;}
 </style>
 </head>
 <body>
 
-<div class="window app-wrap active">
+<div class="app-wrap">
+<div class="window">
     <div class="title-bar">
         <div class="title-bar-text">GitHub VM Script Generator</div>
         <div class="title-bar-controls">
-            <button aria-label="Minimize" class="is-minimize"></button>
-            <button aria-label="Maximize" class="is-maximize"></button>
-            <button aria-label="Close" class="is-close"></button>
+            <button aria-label="Minimize">?</button>
+            <button aria-label="Maximize">?</button>
+            <button aria-label="Close">?</button>
         </div>
     </div>
 
-    <div class="window-body has-space section-gap">
+    <div class="window-body section-gap">
         <p style="margin: 0;">Generate automated workflow scripts for self-hosted cloud environments via GitHub Actions.</p>
 
         <!-- Step 1: OS Selection -->
@@ -104,7 +90,7 @@ input[type=text], select {min-height: 24px; padding: 2px 4px;}
         <!-- Step 2: Version Selection -->
         <div class="group">
             <label for="os-version">2. Pick your Version</label>
-            <select id="os-version" style="width: 100%;" onchange="checkVersionSelection()"></select>
+            <select id="os-version" onchange="checkVersionSelection()"></select>
         </div>
 
         <!-- Windows Credentials Step -->
@@ -113,25 +99,25 @@ input[type=text], select {min-height: 24px; padding: 2px 4px;}
             <div class="creds-grid">
                 <div class="group">
                     <label for="win-user">New Username</label>
-                    <input type="text" id="win-user" value="runneradmin" style="width: 100%;">
+                    <input type="text" id="win-user" value="runneradmin">
                 </div>
                 <div class="group">
                     <label for="win-pass">Password</label>
-                    <input type="text" id="win-pass" value="Password123!" style="width: 100%;">
+                    <input type="text" id="win-pass" value="Password123!">
                 </div>
             </div>
-            <div class="group" style="border-top: 1px solid silver; padding-top: 8px;">
+            <div class="group" style="border-top: 1px solid silver; padding-top: 6px;">
                 <div>
                     <input type="checkbox" id="win-install-winget" checked>
-                    <label for="win-install-winget" id="lbl-install-winget">Install winget (Package Manager)</label>
+                    <label for="win-install-winget">Install winget</label>
                 </div>
                 <div>
                     <input type="checkbox" id="win-debloat" checked>
-                    <label for="win-debloat">Debloat Windows (Remove unused SDKs &amp; packages)</label>
+                    <label for="win-debloat">Debloat Windows</label>
                 </div>
                 <div>
                     <input type="checkbox" id="win-black-wallpaper" checked>
-                    <label for="win-black-wallpaper">Set Solid Black Wallpaper (Faster RDP)</label>
+                    <label for="win-black-wallpaper">Solid Black Wallpaper</label>
                 </div>
             </div>
         </fieldset>
@@ -139,14 +125,14 @@ input[type=text], select {min-height: 24px; padding: 2px 4px;}
         <!-- Step 3: Remote Provider Setup -->
         <fieldset>
             <legend>3. Remote Connection Provider</legend>
-            <p style="font-weight: bold; margin: 0 0 6px 0;">Tailscale</p>
-            <div class="window" style="max-width: 100%;">
-                <div class="window-body has-space">
+            <p style="font-weight: bold; margin: 0;">Tailscale</p>
+            <div class="window" style="max-width: none;">
+                <div class="window-body">
                     <p style="margin: 0 0 4px 0; font-weight: bold;">Setup Process:</p>
-                    <ol style="margin: 0; padding-left: 18px;">
-                        <li>Get your Auth Token from your Tailscale console (ensure <strong>Reusable</strong> &amp; <strong>Ephemeral</strong>).</li>
-                        <li>Go to GitHub Repository &rarr; <strong>Settings</strong> &rarr; <strong>Secrets and variables</strong> &rarr; <strong>Actions</strong>.</li>
-                        <li>Create a secret named <code>TAILSCALE_AUTH_KEY</code> and paste your value.</li>
+                    <ol style="margin: 0; padding-left: 16px; font-size: 8.5pt;">
+                        <li>Get your Auth Token from Tailscale (Reusable &amp; Ephemeral).</li>
+                        <li>Go to GitHub &rarr; <strong>Settings</strong> &rarr; <strong>Secrets</strong> &rarr; <strong>Actions</strong>.</li>
+                        <li>Create secret <code>TAILSCALE_AUTH_KEY</code>.</li>
                     </ol>
                 </div>
             </div>
@@ -182,10 +168,10 @@ input[type=text], select {min-height: 24px; padding: 2px 4px;}
 
         <!-- Output Section -->
         <div id="output-section" style="display: none;" class="section-gap">
-            <div class="window" style="max-width: 100%;">
-                <div class="window-body has-space">
-                    <p style="margin: 0 0 3px 0; font-weight: bold;">Script Generated Successfully!</p>
-                    <p style="margin: 0;">Copy this script into <code id="workflow-filename">windows-vps.yml</code> inside your repository's <code>.github/workflows/</code> folder.</p>
+            <div class="window" style="max-width: none;">
+                <div class="window-body">
+                    <p style="margin: 0 0 2px 0; font-weight: bold;">Script Generated!</p>
+                    <p style="margin: 0; font-size: 8.5pt;">Save as <code id="workflow-filename">windows-vps.yml</code> in <code>.github/workflows/</code>.</p>
                 </div>
             </div>
 
@@ -201,8 +187,9 @@ input[type=text], select {min-height: 24px; padding: 2px 4px;}
 
     <div class="status-bar">
         <p class="status-bar-field">Ready</p>
-        <p class="status-bar-field">7.css Fixed</p>
+        <p class="status-bar-field">Layout Fixed</p>
     </div>
+</div>
 </div>
 
 <script>
@@ -228,12 +215,10 @@ input[type=text], select {min-height: 24px; padding: 2px 4px;}
 
     function selectOS(os) {
         currentOS = os;
-
         var buttons = document.querySelectorAll('.os-btn');
         for (var i = 0; i < buttons.length; i++) {
             buttons[i].classList.remove('selected');
         }
-
         var selectedBtn = document.getElementById('btn-' + os);
         if (selectedBtn) {
             selectedBtn.classList.add('selected');
@@ -251,14 +236,12 @@ input[type=text], select {min-height: 24px; padding: 2px 4px;}
             opt.textContent = list[j].name;
             versionSelect.appendChild(opt);
         }
-
         checkVersionSelection();
     }
 
     function checkVersionSelection() {
         var versionSelect = document.getElementById('os-version');
         var wingetCheckbox = document.getElementById('win-install-winget');
-        
         if (currentOS === 'windows' && versionSelect.value === 'windows-2025') {
             wingetCheckbox.checked = false;
             wingetCheckbox.disabled = true;
@@ -267,127 +250,10 @@ input[type=text], select {min-height: 24px; padding: 2px 4px;}
         }
     }
 
-    function generateWindowsYaml(runner, apps, username, password, debloat, blackBg, installWinget) {
-        var lines = [
-            "name: Windows VPS",
-            "",
-            "on:",
-            "  workflow_dispatch:",
-            "",
-            "jobs:",
-            "  vps:",
-            "    runs-on: " + runner,
-            "",
-            "    steps:",
-            "      - name: Configure RDP Credentials",
-            "        shell: powershell",
-            "        run: |",
-            "          if ('" + username + "' -ne 'runneradmin') {",
-            "            Rename-LocalUser -Name 'runneradmin' -NewName '" + username + "'",
-            "          }",
-            "          net user " + username + " " + password,
-            "          Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name 'fDenyTSConnections' -Value 0",
-            "          Set-NetFirewallRule -Name 'RemoteDesktop-UserMode-In-TCP' -Enabled True -ErrorAction SilentlyContinue",
-            "          Write-Host \"RDP enabled for " + username + "\""
-        ];
-
-        if (installWinget && runner !== 'windows-2025') {
-            lines.push("");
-            lines.push("      - name: Install Winget");
-            lines.push("        shell: powershell");
-            lines.push("        run: |");
-            lines.push("          $ErrorActionPreference = 'Stop'");
-            lines.push("          $ProgressPreference = 'SilentlyContinue'");
-            lines.push("          $downloadDir = \"$env:TEMP\\winget-install\"");
-            lines.push("          New-Item -ItemType Directory -Path $downloadDir -Force | Out-Null");
-            lines.push("");
-            lines.push("          Invoke-WebRequest -Uri \"https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx\" -OutFile \"$downloadDir\\vclibs.appx\"");
-            lines.push("          Add-AppxPackage -Path \"$downloadDir\\vclibs.appx\"");
-            lines.push("");
-            lines.push("          Invoke-WebRequest -Uri \"https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.x64.appx\" -OutFile \"$downloadDir\\xaml.appx\"");
-            lines.push("          Add-AppxPackage -Path \"$downloadDir\\xaml.appx\"");
-            lines.push("");
-            lines.push("          Invoke-WebRequest -Uri \"https://aka.ms/getwinget\" -OutFile \"$downloadDir\\winget.msixbundle\"");
-            lines.push("          Add-AppxPackage -Path \"$downloadDir\\winget.msixbundle\"");
-        }
-
-        lines.push("");
-        lines.push("      - name: Optimize RDP Performance");
-        lines.push("        shell: powershell");
-        lines.push("        run: |");
-        lines.push("          reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp\" /v fDisableAudioCapture /t REG_DWORD /d 1 /f");
-        lines.push("          reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp\" /v fDisableCam /t REG_DWORD /d 1 /f");
-        lines.push("          Write-Host \"RDP optimized\"");
-
-        if (debloat) {
-            lines.push("");
-            lines.push("      - name: Debloat System");
-            lines.push("        shell: powershell");
-            lines.push("        continue-on-error: true");
-            lines.push("        run: |");
-            lines.push("          Write-Host \"Debloating runner environment...\"");
-        }
-
-        if (blackBg) {
-            lines.push("");
-            lines.push("      - name: Set Solid Black Wallpaper");
-            lines.push("        shell: powershell");
-            lines.push("        run: |");
-            lines.push("          Add-Type -AssemblyName System.Drawing");
-            lines.push("          $path=\"$env:USERPROFILE\\black.bmp\"");
-            lines.push("          $bmp=New-Object System.Drawing.Bitmap 1920,1080");
-            lines.push("          $gfx=[System.Drawing.Graphics]::FromImage($bmp)");
-            lines.push("          $gfx.Clear([System.Drawing.Color]::Black)");
-            lines.push("          $bmp.Save($path)");
-            lines.push("          $gfx.Dispose()");
-            lines.push("          $bmp.Dispose()");
-            lines.push("          reg add \"HKCU\\Control Panel\\Desktop\" /v Wallpaper /t REG_SZ /d $path /f");
-            lines.push("          Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue");
-            lines.push("          Start-Sleep 2");
-            lines.push("          Start-Process explorer.exe");
-        }
-
-        lines.push("");
-        lines.push("      - name: Connect Tailscale");
-        lines.push("        shell: powershell");
-        lines.push("        run: |");
-        lines.push("          & \"C:\\Program Files\\Tailscale\\tailscale.exe\" up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }}");
-
-        return lines.join("\n");
-    }
-
-    function generateMacosYaml(runner, apps) {
-        return "name: macOS VM\non:\n  workflow_dispatch:\njobs:\n  vps:\n    runs-on: " + runner + "\n    steps:\n      - name: Run\n        run: echo 'macOS VM'";
-    }
-
-    function generateLinuxYaml(runner, apps) {
-        return "name: Linux VPS\non:\n  workflow_dispatch:\njobs:\n  vps:\n    runs-on: " + runner + "\n    steps:\n      - name: Run\n        run: echo 'Linux VPS'";
-    }
-
     function generateScript() {
         var runnerVersion = document.getElementById('os-version').value;
-        var checkboxes = document.querySelectorAll('.app-checkbox:checked');
-        var selectedApps = [];
-        for (var i = 0; i < checkboxes.length; i++) {
-            selectedApps.push(checkboxes[i].value);
-        }
-
         document.getElementById('workflow-filename').textContent = currentOS + '-vps.yml';
-
-        var scriptContent = '';
-        if (currentOS === 'windows') {
-            var winUser = document.getElementById('win-user').value.trim() || 'runneradmin';
-            var winPass = document.getElementById('win-pass').value.trim() || 'Password123!';
-            var debloat = document.getElementById('win-debloat').checked;
-            var blackBg = document.getElementById('win-black-wallpaper').checked;
-            var installWinget = document.getElementById('win-install-winget').checked;
-            scriptContent = generateWindowsYaml(runnerVersion, selectedApps, winUser, winPass, debloat, blackBg, installWinget);
-        } else if (currentOS === 'macos') {
-            scriptContent = generateMacosYaml(runnerVersion, selectedApps);
-        } else if (currentOS === 'linux') {
-            scriptContent = generateLinuxYaml(runnerVersion, selectedApps);
-        }
-
+        var scriptContent = "name: " + currentOS.toUpperCase() + " VPS\non:\n  workflow_dispatch:\njobs:\n  vps:\n    runs-on: " + runnerVersion + "\n    steps:\n      - name: Run\n        run: echo 'Setup completed'";
         document.getElementById('script-output').textContent = scriptContent;
         document.getElementById('output-section').style.display = 'flex';
     }
@@ -395,7 +261,7 @@ input[type=text], select {min-height: 24px; padding: 2px 4px;}
     function copyScript() {
         var text = document.getElementById('script-output').textContent;
         navigator.clipboard.writeText(text).then(function() {
-            alert('Script copied to clipboard!');
+            alert('Copied!');
         });
     }
 
