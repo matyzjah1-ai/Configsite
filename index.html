@@ -221,7 +221,7 @@
                 "          }",
                 "          net user " + username + " " + password,
                 "          Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name 'fDenyTSConnections' -Value 0",
-                "          Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'",
+                "          netsh advfirewall firewall set rule group=\"remote desktop\" new enable=Yes",
                 "          Write-Host \"RDP enabled for " + username + "\""
             ];
 
@@ -450,3 +450,4 @@
     </script>
 </body>
 </html>
+
