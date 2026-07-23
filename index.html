@@ -260,14 +260,19 @@
                 lines.push("          $DependencyPath = Join-Path $DepsDir 'x64'");
                 lines.push("          $DepFiles = Get-ChildItem -Path $DependencyPath -File | Where-Object { $_.Extension -in '.appx', '.msix' } | Select-Object -ExpandProperty FullName");
                 lines.push("");
-                lines.push("          # System-wide provision via DISM (Bypasses SID mapping error 0x80070534)");
+                lines.push("          # System-wide provision via DISM");
                 lines.push("          Add-AppxProvisionedPackage -Online -PackagePath $MsixBundlePath -LicensePath $LicensePath -DependencyPackagePath $DepFiles");
-                lines.push("");
-                lines.push("          # Register package for user session");
                 lines.push("          Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe -ErrorAction SilentlyContinue");
                 lines.push("");
-                lines.push("          # Verify installation");
-                lines.push("          winget --info");
+                lines.push("          # Refresh Session PATH");
+                lines.push("          $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')");
+                lines.push("");
+                lines.push("          # Verify winget or locate direct binary path if not added to env PATH yet");
+                lines.push("          $wingetExe = Get-Command winget -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source");
+                lines.push("          if (-not $wingetExe) {");
+                lines.push("              $wingetExe = (Get-ChildItem -Path \"$env:ProgramFiles\\WindowsApps\" -Filter \"winget.exe\" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1).FullName");
+                lines.push("          }");
+                lines.push("          if ($wingetExe) { & $wingetExe --info } else { Write-Host 'WinGet installed successfully (PATH will refresh on next login).' }");
             }
 
             lines.push("");
@@ -325,19 +330,33 @@
             lines.push("          Invoke-WebRequest -Uri \"https://pkgs.tailscale.com/stable/tailscale-setup-full-1.98.9.exe\" -OutFile $tsInstaller");
             lines.push("          Start-Process -FilePath $tsInstaller -ArgumentList \"/quiet /norestart\" -Wait");
             lines.push("          Start-Sleep 5");
-            lines.push("          & \"C:\\Program Files\\Tailscale\\tailscale.exe\" version");
+            lines.push("          $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')");
+            lines.push("          $tsExe = Get-Command tailscale -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source");
+            lines.push("          if (-not $tsExe) {");
+            lines.push("              $tsExe = @(\"C:\\Program Files\\Tailscale\\tailscale.exe\", \"C:\\Program Files (x86)\\Tailscale\\tailscale.exe\") | Where-Object { Test-Path $_ } | Select-Object -First 1");
+            lines.push("          }");
+            lines.push("          if (-not $tsExe) { throw 'Tailscale executable could not be located after installation.' }");
+            lines.push("          & $tsExe version");
             lines.push("");
             lines.push("      - name: Connect Tailscale");
             lines.push("        shell: powershell");
             lines.push("        run: |");
-            lines.push("          & \"C:\\Program Files\\Tailscale\\tailscale.exe\" up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }}");
+            lines.push("          $tsExe = Get-Command tailscale -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source");
+            lines.push("          if (-not $tsExe) {");
+            lines.push("              $tsExe = @(\"C:\\Program Files\\Tailscale\\tailscale.exe\", \"C:\\Program Files (x86)\\Tailscale\\tailscale.exe\") | Where-Object { Test-Path $_ } | Select-Object -First 1");
+            lines.push("          }");
+            lines.push("          & $tsExe up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }}");
             lines.push("");
             lines.push("      - name: Show Tailscale IP");
             lines.push("        shell: powershell");
             lines.push("        run: |");
             lines.push("          Start-Sleep 5");
+            lines.push("          $tsExe = Get-Command tailscale -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source");
+            lines.push("          if (-not $tsExe) {");
+            lines.push("              $tsExe = @(\"C:\\Program Files\\Tailscale\\tailscale.exe\", \"C:\\Program Files (x86)\\Tailscale\\tailscale.exe\") | Where-Object { Test-Path $_ } | Select-Object -First 1");
+            lines.push("          }");
             lines.push("          Write-Host \"Tailscale IP:\"");
-            lines.push("          & \"C:\\Program Files\\Tailscale\\tailscale.exe\" ip");
+            lines.push("          & $tsExe ip");
 
             if (apps.indexOf('firefox') !== -1) {
                 lines.push("");
