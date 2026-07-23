@@ -47,9 +47,9 @@
                 </select>
             </div>
 
-            <!-- Windows Credentials & Debloat Step -->
+            <!-- Windows Credentials Step -->
             <div id="windows-creds-container" class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-5 space-y-4">
-                <label class="block text-sm font-medium text-slate-300">RDP Credentials & System Clean Options</label>
+                <label class="block text-sm font-medium text-slate-300">RDP Account Credentials & System Options</label>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">Username</label>
@@ -67,7 +67,7 @@
                     </label>
                     <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
                         <input type="checkbox" id="win-black-wallpaper" checked class="rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
-                        <span>Set Solid Black Wallpaper (Faster RDP performance)</span>
+                        <span>Set Solid Black Wallpaper (Faster RDP)</span>
                     </label>
                 </div>
             </div>
@@ -209,13 +209,18 @@
                 "    runs-on: " + runner,
                 "",
                 "    steps:",
-                "      - name: Configure RDP",
+                "      - name: Configure RDP User",
                 "        shell: powershell",
                 "        run: |",
-                "          net user " + username + " " + password,
+                "          if (Get-LocalUser -Name '" + username + "' -ErrorAction SilentlyContinue) {",
+                "            net user " + username + " " + password,
+                "          } else {",
+                "            net user " + username + " " + password + " /add",
+                "            net localgroup Administrators " + username + " /add",
+                "          }",
                 "          Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name 'fDenyTSConnections' -Value 0",
                 "          Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'",
-                "          Write-Host \"RDP enabled\"",
+                "          Write-Host \"RDP enabled for " + username + "\"",
                 "",
                 "      - name: Optimize RDP Performance",
                 "        shell: powershell",
@@ -227,7 +232,7 @@
 
             if (debloat) {
                 lines.push("");
-                lines.push("      - name: Debloat System (Remove Pre-installed Packages)");
+                lines.push("      - name: Debloat System");
                 lines.push("        shell: powershell");
                 lines.push("        continue-on-error: true");
                 lines.push("        run: |");
@@ -242,7 +247,6 @@
                 lines.push("              Start-Process $path -ArgumentList \"/VERYSILENT /SUPPRESSMSGBOXES /NORESTART\" -Wait");
                 lines.push("            }");
                 lines.push("          }");
-                lines.push("          Get-AppxPackage -AllUsers | Where-Object {$_.Name -like \"*Xbox*\" -or $_.Name -like \"*Bing*\"} | Remove-AppxPackage -ErrorAction SilentlyContinue");
             }
 
             if (blackBg) {
