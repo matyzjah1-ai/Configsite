@@ -25,15 +25,15 @@
             <div>
                 <label class="block text-sm font-medium text-slate-300 mb-3">1. Pick Your Preferred OS</label>
                 <div class="grid grid-cols-3 gap-4" id="os-selector">
-                    <button type="button" onclick="selectOS('macos')" id="btn-macos" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-slate-700 bg-slate-800 hover:border-blue-500 transition-all cursor-pointer">
+                    <button type="button" id="btn-macos" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-slate-700 bg-slate-800 hover:border-blue-500 transition-all cursor-pointer">
                         <i class="fa-brands fa-apple text-3xl mb-2 text-slate-200"></i>
                         <span class="font-medium text-sm">macOS</span>
                     </button>
-                    <button type="button" onclick="selectOS('linux')" id="btn-linux" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-slate-700 bg-slate-800 hover:border-blue-500 transition-all cursor-pointer">
+                    <button type="button" id="btn-linux" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-slate-700 bg-slate-800 hover:border-blue-500 transition-all cursor-pointer">
                         <i class="fa-brands fa-linux text-3xl mb-2 text-slate-200"></i>
                         <span class="font-medium text-sm">Linux</span>
                     </button>
-                    <button type="button" onclick="selectOS('windows')" id="btn-windows" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-blue-500 bg-blue-950/40 transition-all cursor-pointer">
+                    <button type="button" id="btn-windows" class="os-btn flex flex-col items-center justify-center p-4 rounded-xl border border-blue-500 bg-blue-950/40 transition-all cursor-pointer">
                         <i class="fa-brands fa-windows text-3xl mb-2 text-blue-400"></i>
                         <span class="font-medium text-sm">Windows</span>
                     </button>
@@ -43,8 +43,8 @@
             <!-- Step 2: Version Selection -->
             <div>
                 <label class="block text-sm font-medium text-slate-300 mb-2">2. Pick your Version</label>
-                <select id="os-version" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-slate-200">
-                    <!-- Populated dynamically via JS -->
+                <select id="os-version" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-slate-200 cursor-pointer">
+                    <!-- Populated dynamically -->
                 </select>
             </div>
 
@@ -113,7 +113,7 @@
             </div>
 
             <!-- Action Button -->
-            <button type="button" onclick="generateScript()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-blue-600/20 cursor-pointer">
+            <button type="button" id="btn-generate" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-blue-600/20 cursor-pointer">
                 [ Generate Script ]
             </button>
 
@@ -128,7 +128,7 @@
                 <div class="relative">
                     <div class="flex items-center justify-between bg-slate-950 px-4 py-2 border border-slate-800 rounded-t-xl text-xs text-slate-400">
                         <span id="workflow-filename">windows-vps.yml</span>
-                        <button onclick="copyScript()" class="hover:text-white flex items-center gap-1.5 cursor-pointer bg-slate-800 px-2.5 py-1 rounded border border-slate-700">
+                        <button type="button" id="btn-copy" class="hover:text-white flex items-center gap-1.5 cursor-pointer bg-slate-800 px-2.5 py-1 rounded border border-slate-700">
                             <i class="fa-regular fa-copy"></i> Copy
                         </button>
                     </div>
@@ -140,140 +140,112 @@
     </div>
 
     <script>
-        const versions = {
-            windows: [
-                { name: 'Windows 2025', value: 'windows-2025' },
-                { name: 'Windows 2022', value: 'windows-2022' },
-                { name: 'Windows 2019', value: 'windows-2019' }
-            ],
-            macos: [
-                { name: 'macOS 15 (Sequoia)', value: 'macos-15' },
-                { name: 'macOS 14 (Sonoma)', value: 'macos-14' },
-                { name: 'macOS 13 (Ventura)', value: 'macos-13' }
-            ],
-            linux: [
-                { name: 'Ubuntu 24.04 LTS', value: 'ubuntu-24.04' },
-                { name: 'Ubuntu 22.04 LTS', value: 'ubuntu-22.04' },
-                { name: 'Ubuntu 20.04 LTS', value: 'ubuntu-20.04' }
-            ]
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            const versions = {
+                windows: [
+                    { name: 'Windows 2025', value: 'windows-2025' },
+                    { name: 'Windows 2022', value: 'windows-2022' },
+                    { name: 'Windows 2019', value: 'windows-2019' }
+                ],
+                macos: [
+                    { name: 'macOS 15 (Sequoia)', value: 'macos-15' },
+                    { name: 'macOS 14 (Sonoma)', value: 'macos-14' },
+                    { name: 'macOS 13 (Ventura)', value: 'macos-13' }
+                ],
+                linux: [
+                    { name: 'Ubuntu 24.04 LTS', value: 'ubuntu-24.04' },
+                    { name: 'Ubuntu 22.04 LTS', value: 'ubuntu-22.04' },
+                    { name: 'Ubuntu 20.04 LTS', value: 'ubuntu-20.04' }
+                ]
+            };
 
-        const appPackages = {
-            windows: {
-                firefox: 'Mozilla.Firefox',
-                obs: 'OBSProject.OBSStudio',
-                discord: 'Discord.Discord',
-                notepadpp: 'Notepad++.Notepad++'
-            },
-            macos: {
-                firefox: 'firefox',
-                obs: 'obs',
-                discord: 'discord',
-                notepadpp: 'notepad-plus-plus'
-            },
-            linux: {
-                firefox: 'firefox',
-                obs: 'obs-studio',
-                discord: 'discord',
-                notepadpp: 'notepad-plus-plus'
-            }
-        };
+            const appPackages = {
+                windows: {
+                    firefox: 'Mozilla.Firefox',
+                    obs: 'OBSProject.OBSStudio',
+                    discord: 'Discord.Discord',
+                    notepadpp: 'Notepad++.Notepad++'
+                },
+                macos: {
+                    firefox: 'firefox',
+                    obs: 'obs',
+                    discord: 'discord',
+                    notepadpp: 'notepad-plus-plus'
+                },
+                linux: {
+                    firefox: 'firefox',
+                    obs: 'obs-studio',
+                    discord: 'discord',
+                    notepadpp: 'notepad-plus-plus'
+                }
+            };
 
-        let currentOS = 'windows';
+            let currentOS = 'windows';
 
-        function selectOS(os) {
-            currentOS = os;
-            
-            document.querySelectorAll('.os-btn').forEach(btn => {
-                btn.classList.remove('border-blue-500', 'bg-blue-950/40');
-                btn.classList.add('border-slate-700', 'bg-slate-800');
-            });
-            
-            const selectedBtn = document.getElementById(`btn-${os}`);
-            if (selectedBtn) {
-                selectedBtn.classList.remove('border-slate-700', 'bg-slate-800');
-                selectedBtn.classList.add('border-blue-500', 'bg-blue-950/40');
-            }
+            function selectOS(os) {
+                currentOS = os;
+                
+                document.querySelectorAll('.os-btn').forEach(btn => {
+                    btn.classList.remove('border-blue-500', 'bg-blue-950/40');
+                    btn.classList.add('border-slate-700', 'bg-slate-800');
+                });
+                
+                const selectedBtn = document.getElementById(`btn-${os}`);
+                if (selectedBtn) {
+                    selectedBtn.classList.remove('border-slate-700', 'bg-slate-800');
+                    selectedBtn.classList.add('border-blue-500', 'bg-blue-950/40');
+                }
 
-            const credsContainer = document.getElementById('windows-creds-container');
-            if (os === 'windows') {
-                credsContainer.classList.remove('hidden');
-            } else {
-                credsContainer.classList.add('hidden');
-            }
+                const credsContainer = document.getElementById('windows-creds-container');
+                if (os === 'windows') {
+                    credsContainer.classList.remove('hidden');
+                } else {
+                    credsContainer.classList.add('hidden');
+                }
 
-            const versionSelect = document.getElementById('os-version');
-            versionSelect.innerHTML = '';
-            versions[os].forEach(v => {
-                const opt = document.createElement('option');
-                opt.value = v.value;
-                opt.textContent = v.name;
-                versionSelect.appendChild(opt);
-            });
-        }
-
-        function generateScript() {
-            const runnerVersion = document.getElementById('os-version').value;
-            const selectedApps = [];
-            document.querySelectorAll('.app-checkbox:checked').forEach(cb => {
-                selectedApps.push(cb.value);
-            });
-
-            document.getElementById('workflow-filename').textContent = `${currentOS}-vps.yml`;
-
-            let scriptContent = '';
-
-            if (currentOS === 'windows') {
-                const winUser = document.getElementById('win-user').value.trim() || 'runneradmin';
-                const winPass = document.getElementById('win-pass').value.trim() || 'Password123!';
-                scriptContent = generateWindowsYaml(runnerVersion, selectedApps, winUser, winPass);
-            } else if (currentOS === 'macos') {
-                scriptContent = generateMacosYaml(runnerVersion, selectedApps);
-            } else if (currentOS === 'linux') {
-                scriptContent = generateLinuxYaml(runnerVersion, selectedApps);
-            }
-
-            document.getElementById('script-output').textContent = scriptContent.trim();
-            document.getElementById('output-section').classList.remove('hidden');
-        }
-
-        function generateWindowsYaml(runner, apps, username, password) {
-            let appInstallSteps = '';
-            if (apps.includes('roblox')) {
-                appInstallSteps += `
-      - name: Install Roblox Studio
-        shell: powershell
-        run: |
-          $installer = "$env:TEMP/RobloxStudioInstaller.exe"
-          Invoke-WebRequest -Uri "https://setup.rbxcdn.com/RobloxStudioInstaller.exe" -OutFile $installer
-          Start-Process $installer
-          $timeout = 600
-          $time = 0
-          while ($time -lt $timeout) {
-            $studio = Get-ChildItem "$env:LOCALAPPDATA/Roblox/Versions" -Recurse -Filter RobloxStudioBeta.exe -ErrorAction SilentlyContinue
-            if ($studio) {
-              Write-Host "Roblox Studio installed: $($studio.FullName)"
-              break
-            }
-            Start-Sleep 10
-            $time += 10
-          }
-`;
-            }
-
-            const wingetApps = apps.filter(a => a !== 'roblox').map(a => appPackages.windows[a]);
-            if (wingetApps.length > 0) {
-                appInstallSteps += `
-      - name: Install Apps via Winget
-        shell: powershell
-        run: |
-`;
-                wingetApps.forEach(pkg => {
-                    appInstallSteps += `          winget install --id ${pkg} --silent --accept-package-agreements --accept-source-agreements\n`;
+                const versionSelect = document.getElementById('os-version');
+                versionSelect.innerHTML = '';
+                versions[os].forEach(v => {
+                    const opt = document.createElement('option');
+                    opt.value = v.value;
+                    opt.textContent = v.name;
+                    versionSelect.appendChild(opt);
                 });
             }
 
-            return `name: Windows VPS
+            function generateWindowsYaml(runner, apps, username, password) {
+                let appInstallSteps = '';
+                if (apps.includes('roblox')) {
+                    appInstallSteps += '\n      - name: Install Roblox Studio\n' +
+                        '        shell: powershell\n' +
+                        '        run: |\n' +
+                        '          $installer = "$env:TEMP/RobloxStudioInstaller.exe"\n' +
+                        '          Invoke-WebRequest -Uri "https://setup.rbxcdn.com/RobloxStudioInstaller.exe" -OutFile $installer\n' +
+                        '          Start-Process $installer\n' +
+                        '          $timeout = 600\n' +
+                        '          $time = 0\n' +
+                        '          while ($time -lt $timeout) {\n' +
+                        '            $studio = Get-ChildItem "$env:LOCALAPPDATA/Roblox/Versions" -Recurse -Filter RobloxStudioBeta.exe -ErrorAction SilentlyContinue\n' +
+                        '            if ($studio) {\n' +
+                        '              Write-Host "Roblox Studio installed: $($studio.FullName)"\n' +
+                        '              break\n' +
+                        '            }\n' +
+                        '            Start-Sleep 10\n' +
+                        '            $time += 10\n' +
+                        '          }\n';
+                }
+
+                const wingetApps = apps.filter(a => a !== 'roblox').map(a => appPackages.windows[a]);
+                if (wingetApps.length > 0) {
+                    appInstallSteps += '\n      - name: Install Apps via Winget\n' +
+                        '        shell: powershell\n' +
+                        '        run: |\n';
+                    wingetApps.forEach(pkg => {
+                        appInstallSteps += `          winget install --id ${pkg} --silent --accept-package-agreements --accept-source-agreements\n`;
+                    });
+                }
+
+                return `name: Windows VPS
 
 on:
   workflow_dispatch:
@@ -311,13 +283,13 @@ jobs:
         run: |
           winget install --id Tailscale.Tailscale --silent --accept-package-agreements --accept-source-agreements
           Start-Sleep 15
-          $tsPath = "\${env:ProgramFiles}/Tailscale/tailscale.exe"
+          $tsPath = "$env:ProgramFiles/Tailscale/tailscale.exe"
           Start-Process $tsPath -ArgumentList "version" -NoNewWindow -Wait
 
       - name: Connect Tailscale
         shell: powershell
         run: |
-          $tsPath = "\${env:ProgramFiles}/Tailscale/tailscale.exe"
+          $tsPath = "$env:ProgramFiles/Tailscale/tailscale.exe"
           Start-Process $tsPath -ArgumentList "up --authkey=\${{ secrets.TAILSCALE_AUTH_KEY }}" -NoNewWindow -Wait
 
       - name: Show Tailscale IP
@@ -325,7 +297,7 @@ jobs:
         run: |
           Start-Sleep 10
           Write-Host "Tailscale IP:"
-          $tsPath = "\${env:ProgramFiles}/Tailscale/tailscale.exe"
+          $tsPath = "$env:ProgramFiles/Tailscale/tailscale.exe"
           Start-Process $tsPath -ArgumentList "ip" -NoNewWindow -Wait
 ${appInstallSteps}
       - name: Keep Alive
@@ -335,30 +307,26 @@ ${appInstallSteps}
             Write-Host "Windows VPS running..."
             Start-Sleep 300
           }`;
-        }
-
-        function generateMacosYaml(runner, apps) {
-            let appInstallSteps = '';
-            const brewCasks = apps.filter(a => a !== 'roblox').map(a => appPackages.macos[a]);
-
-            if (apps.includes('roblox')) {
-                appInstallSteps += `
-      - name: Note on Roblox Studio
-        run: echo "Roblox Studio is not natively supported in headless macOS CI environments without GUI session creation."
-`;
             }
 
-            if (brewCasks.length > 0) {
-                appInstallSteps += `
-      - name: Install Selected Apps via Homebrew
-        run: |
-`;
-                brewCasks.forEach(cask => {
-                    appInstallSteps += `          brew install --cask ${cask} || true\n`;
-                });
-            }
+            function generateMacosYaml(runner, apps) {
+                let appInstallSteps = '';
+                const brewCasks = apps.filter(a => a !== 'roblox').map(a => appPackages.macos[a]);
 
-            return `name: macOS VM
+                if (apps.includes('roblox')) {
+                    appInstallSteps += '\n      - name: Note on Roblox Studio\n' +
+                        '        run: echo "Roblox Studio is not natively supported in headless macOS CI environments without GUI session creation."\n';
+                }
+
+                if (brewCasks.length > 0) {
+                    appInstallSteps += '\n      - name: Install Selected Apps via Homebrew\n' +
+                        '        run: |\n';
+                    brewCasks.forEach(cask => {
+                        appInstallSteps += `          brew install --cask ${cask} || true\n`;
+                    });
+                }
+
+                return `name: macOS VM
 
 on:
   workflow_dispatch:
@@ -388,29 +356,25 @@ ${appInstallSteps}
             echo "macOS VM running..."
             sleep 300
           done`;
-        }
-
-        function generateLinuxYaml(runner, apps) {
-            let appInstallSteps = '';
-            const aptApps = apps.filter(a => a !== 'roblox' && a !== 'notepadpp').map(a => appPackages.linux[a]);
-
-            if (aptApps.length > 0) {
-                appInstallSteps += `
-      - name: Install Selected Apps via APT
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ${aptApps.join(' ')}
-`;
             }
 
-            if (apps.includes('notepadpp')) {
-                appInstallSteps += `
-      - name: Install Notepad++ via Snap
-        run: sudo snap install notepad-plus-plus
-`;
-            }
+            function generateLinuxYaml(runner, apps) {
+                let appInstallSteps = '';
+                const aptApps = apps.filter(a => a !== 'roblox' && a !== 'notepadpp').map(a => appPackages.linux[a]);
 
-            return `name: Linux VPS
+                if (aptApps.length > 0) {
+                    appInstallSteps += '\n      - name: Install Selected Apps via APT\n' +
+                        '        run: |\n' +
+                        '          sudo apt-get update\n' +
+                        `          sudo apt-get install -y ${aptApps.join(' ')}\n`;
+                }
+
+                if (apps.includes('notepadpp')) {
+                    appInstallSteps += '\n      - name: Install Notepad++ via Snap\n' +
+                        '        run: sudo snap install notepad-plus-plus\n';
+                }
+
+                return `name: Linux VPS
 
 on:
   workflow_dispatch:
@@ -438,17 +402,50 @@ ${appInstallSteps}
             echo "Linux VPS running..."
             sleep 300
           done`;
-        }
+            }
 
-        function copyScript() {
-            const text = document.getElementById('script-output').textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Script copied to clipboard!');
+            function generateScript() {
+                const runnerVersion = document.getElementById('os-version').value;
+                const selectedApps = [];
+                document.querySelectorAll('.app-checkbox:checked').forEach(cb => {
+                    selectedApps.push(cb.value);
+                });
+
+                document.getElementById('workflow-filename').textContent = `${currentOS}-vps.yml`;
+
+                let scriptContent = '';
+
+                if (currentOS === 'windows') {
+                    const winUser = document.getElementById('win-user').value.trim() || 'runneradmin';
+                    const winPass = document.getElementById('win-pass').value.trim() || 'Password123!';
+                    scriptContent = generateWindowsYaml(runnerVersion, selectedApps, winUser, winPass);
+                } else if (currentOS === 'macos') {
+                    scriptContent = generateMacosYaml(runnerVersion, selectedApps);
+                } else if (currentOS === 'linux') {
+                    scriptContent = generateLinuxYaml(runnerVersion, selectedApps);
+                }
+
+                document.getElementById('script-output').textContent = scriptContent.trim();
+                document.getElementById('output-section').classList.remove('hidden');
+            }
+
+            // Attach event listeners safely
+            document.getElementById('btn-macos').addEventListener('click', () => selectOS('macos'));
+            document.getElementById('btn-linux').addEventListener('click', () => selectOS('linux'));
+            document.getElementById('btn-windows').addEventListener('click', () => selectOS('windows'));
+
+            document.getElementById('btn-generate').addEventListener('click', generateScript);
+
+            document.getElementById('btn-copy').addEventListener('click', () => {
+                const text = document.getElementById('script-output').textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Script copied to clipboard!');
+                });
             });
-        }
 
-        // Initialize default view on script load
-        selectOS('windows');
+            // Initialize Windows view
+            selectOS('windows');
+        });
     </script>
 </body>
 </html>
